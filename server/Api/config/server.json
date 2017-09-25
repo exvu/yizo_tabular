@@ -1,0 +1,13 @@
+{
+    "server": {
+        "port": 3000,
+        "protocol": "http"
+    },
+    "secret":"yizo_tabular",
+    "mysql": {
+        "host": "localhost",
+        "user": "root",
+        "password": "root",
+        "database": "yizo_tabular"
+    }
+}
