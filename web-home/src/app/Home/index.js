@@ -1,82 +1,93 @@
 import React from 'react'
 import './index.less'
-import { TabBar, Icon, NavBar } from 'antd-mobile';
-
+import { TabBar, NavBar } from 'antd-mobile';
+import { Link } from 'react-router-dom';
+import TabularList from '../Tabular/list';
+import { Icon } from '../common';
+import Mine from '../Mine';
 export default class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'redTab',
-            hidden: false,
+            selectedTab: 'tabular',
+            topPopup: false,
         };
     }
-    renderContent(pageText) {
-        return (
-            <div>
-                {pageText}
-            </div>
-        );
+    renderContent(key) {
+        switch (key) {
+            case "tabular": {
+                return <TabularList />
+            }
+            case "mine": {
+                return <Mine />
+            }
+        }
     }
     render() {
+
+        const { topPopupShow } = this.state;
         return (
             <div className="home">
-                <NavBar
-                    mode="dark"
-                    style={{ position: 'fixed', top: 0, left: 0, right: 0 }}
-                >易表</NavBar>
-                <div  style={{ marginTop:45}}>
-                    <TabBar
-                        unselectedTintColor="#949494"
-                        tintColor="#33A3F4"
-                        barTintColor="white"
-                        hidden={this.state.hidden}
-
-                    >
-                        <TabBar.Item
-                            icon={
-                                <div style={{
-                                    width: '0.44rem',
-                                    height: '0.44rem',
-                                    background: 'url(https://zos.alipayobjects.com/rmsportal/psUFoAMjkCcjqtUCNPxB.svg) center center /  0.42rem 0.42rem no-repeat'
-                                }}
-                                />
-                            }
-                            selectedIcon={
-                                <div style={{
-                                    width: '0.44rem',
-                                    height: '0.44rem',
-                                    background: 'url(https://zos.alipayobjects.com/rmsportal/IIRLrXXrFAhXVdhMWgUI.svg) center center /  0.42rem 0.42rem no-repeat'
-                                }}
-                                />
-                            }
-                            title="朋友"
-                            key="朋友"
-                            dot
-                            selected={this.state.selectedTab === 'greenTab'}
-                            onPress={() => {
-                                this.setState({
-                                    selectedTab: 'greenTab',
-                                });
-                            }}
-                        >
-                            {this.renderContent('朋友')}
-                        </TabBar.Item>
-                        <TabBar.Item
-                            icon={{ uri: 'https://zos.alipayobjects.com/rmsportal/asJMfBrNqpMMlVpeInPQ.svg' }}
-                            selectedIcon={{ uri: 'https://zos.alipayobjects.com/rmsportal/gjpzzcrPMkhfEqgbYvmN.svg' }}
-                            title="我的"
-                            key="我的"
-                            selected={this.state.selectedTab === 'yellowTab'}
-                            onPress={() => {
-                                this.setState({
-                                    selectedTab: 'yellowTab',
-                                });
-                            }}
-                        >
-                            {this.renderContent('我的')}
-                        </TabBar.Item>
-                    </TabBar>
+                <header className="header">
+                    <div className="left"></div>
+                    <div className="title">易表</div>
+                    <div className="right" onClick={() => {
+                        this.setState({
+                            topPopupShow: true
+                        })
+                    }}>
+                        <Icon type="add" />
+                    </div>
+                </header>
+                <div className="popup" style={{ display: topPopupShow ? 'block' : 'none' }} onClick={() => {
+                    this.setState({
+                        topPopupShow: false
+                    })
+                }}>
+                    <div className="popup-innner">
+                        <div className="popup-item">
+                            <Link to="/tabular/creater">创建表单</Link>
+                        </div>
+                        <div className="popup-item">
+                            <Link to="#">创建问卷</Link>
+                        </div>
+                    </div>
                 </div>
+                <TabBar
+                    unselectedTintColor="#949494"
+                    tintColor="#33A3F4"
+                    barTintColor="white"
+                >
+                    <TabBar.Item
+                        icon={<Icon type="tabular" />}
+                        selectedIcon={<Icon type="tabular" />}
+                        title="表单"
+                        key="tabular"
+                        dot
+                        selected={this.state.selectedTab === 'tabular'}
+                        onPress={() => {
+                            this.setState({
+                                selectedTab: 'tabular',
+                            });
+                        }}
+                    >
+                        {this.renderContent('tabular')}
+                    </TabBar.Item>
+                    <TabBar.Item
+                        icon={<Icon type="mine" />}
+                        selectedIcon={<Icon type="mine" />}
+                        title="我的"
+                        key="mine"
+                        selected={this.state.selectedTab === 'mine'}
+                        onPress={() => {
+                            this.setState({
+                                selectedTab: 'mine',
+                            });
+                        }}
+                    >
+                        {this.renderContent('mine')}
+                    </TabBar.Item>
+                </TabBar>
             </div>
 
         )

@@ -2,7 +2,9 @@ import React from 'react'
 import { Row, Col } from 'antd';
 import { render } from 'react-dom'
 import StartPage from './StartPage'
-import SignIn from './Sign/SignIn'
+import TabularCreater from './Tabular/creater'
+import TabularEditor from './Tabular/editor'
+import Sign from './Sign'
 import Home from './Home'
 import './index.less'
 import {
@@ -17,7 +19,9 @@ export default class App extends React.Component {
             <Router history={history}>
                 <div className="page-wrapper">
                     <Route path="/home" component={Home} />
-                    <Route path="/signIn" component={SignIn} />
+                    <Route path="/tabular/editor" component={TabularEditor} />
+                    <Route path="/tabular/creater" component={TabularCreater} />
+                    <Route path="/signIn" component={Sign} />
                     <Route exact path="/" component={StartPage} />
                 </div>
             </Router>
