@@ -18,12 +18,6 @@ export default class TabularCreater extends React.Component {
                     <InputItem
                         clear
                         placeholder="欢迎词"
-                        focused={false}
-                        onFocus={() => {
-                            this.setState({
-                                focused: false,
-                            });
-                        }}
                     >欢迎词</InputItem>
                     <List.Item>
                         <div

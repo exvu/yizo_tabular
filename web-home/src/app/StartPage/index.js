@@ -1,5 +1,4 @@
 import React from 'react'
-import { Row, Col } from 'antd';
 import { render } from 'react-dom'
 import './index.less'
 import {

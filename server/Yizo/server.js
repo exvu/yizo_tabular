@@ -12,7 +12,7 @@ let multer = require('multer')
 let {Interface } = require('./Library/interface'); 
 let upload = require("./Library/upload.js"); 
 let loadDBsql = require("./Db/sql_loader"); 
-
+const cors = require('cors')
 //配置服务器参数
 serverConfig = Object.assign( {
     "port":3000, 
@@ -59,6 +59,9 @@ module.exports = class Server {
 
         await Log("加载上传文件的中间件中...".yellow); 
         this.app.use(upload); 
+
+        await Log("设置跨域请求...".yellow); 
+        await this.app.use(cors());
 
         await Log("加载sql语句...".yellow); 
         await loadDBsql(); 

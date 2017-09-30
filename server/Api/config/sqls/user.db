@@ -1,0 +1,24 @@
+##用户登录
+#signIn
+SELECT
+  id AS uid,
+  account,
+  _c,
+  _d
+FROM users
+WHERE account = ? AND password = ?
+
+##获取用户信息
+#getUserInfo
+SELECT 
+ id AS uid,
+  account,
+  password,
+  _c,
+  _d
+FROM users
+WHERE account = ?
+
+##添加用户
+#add
+INSERT INTO users set ? 

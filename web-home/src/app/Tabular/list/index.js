@@ -158,15 +158,23 @@ class ListItem extends React.Component {
                 {showToolBar && (
                     <div className="tool-bar">
                         <div className="tool-item">
-                            <Icon type="start" />
+                            <Icon type="start-circle-o" />
                             <p>发布</p>
                         </div>
                         <div className="tool-item">
-                            <Icon type="editor" />
+                            <Icon type="editor-circle-o" />
                             <p>编辑</p>
                         </div>
                         <div className="tool-item">
-                            <Icon type="del" />
+                            <Icon type="data-circle-o" />
+                            <p>数据</p>
+                        </div>
+                        <div className="tool-item">
+                            <Icon type="share-circle-o" />
+                            <p>分享</p>
+                        </div>
+                        <div className="tool-item">
+                            <Icon type="del-circle-o" />
                             <p>删除</p>
                         </div>
                     </div>

@@ -5,14 +5,14 @@
         "stage-0"
     ],
     "plugins": [
-        "transform-runtime",
         [
             "import",
             {
-                "libraryName": "antd-mobile",
-                "style": "css"
+                "style": "css",
+                "libraryName": "antd-mobile"
             }
-        ]
+        ],
+        "transform-runtime"
     ],
     "env": {
         "development": {
