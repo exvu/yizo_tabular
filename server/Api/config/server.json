@@ -5,9 +5,9 @@
     },
     "secret":"yizo_tabular",
     "mysql": {
-        "host": "localhost",
+        "host": "119.29.189.99",
         "user": "root",
-        "password": "root",
+        "password": "coder123456",
         "database": "yizo_tabular"
     }
 }

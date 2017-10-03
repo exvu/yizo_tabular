@@ -62,6 +62,12 @@ module.exports = class Server {
 
         await Log("设置跨域请求...".yellow); 
         await this.app.use(cors());
+        await this.app.use((req,res,next)=>{
+            res.header("Access-Control-Allow-Headers", 'access-token');
+            //访问控制暴露头
+            res.header("Access-Control-Expose-Headers", 'access-token');
+        next();
+        })
 
         await Log("加载sql语句...".yellow); 
         await loadDBsql(); 

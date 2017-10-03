@@ -20,6 +20,7 @@ module.exports = (function () {
    */
   Validate.autoCheck = (params, validate) => {
 
+    console.log(params,validate,'-----------?');
     //设置参数
     this.validateData = {};
     //初始化验证参数和错误

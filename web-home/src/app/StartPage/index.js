@@ -1,9 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import './index.less'
-import {
-    Link
-} from 'react-router-dom'
+import {Link} from 'react-keeper'
 export default class StartPage extends React.Component{
 
     render(){

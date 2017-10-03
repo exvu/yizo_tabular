@@ -1,6 +1,4 @@
-/**
- * 船设备
- */
+
 import { Api } from '../api'
 import api from '../../config/api'
 export default {

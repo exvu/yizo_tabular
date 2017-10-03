@@ -1,32 +1,30 @@
 import React from 'react'
 import { render } from 'react-dom'
 import StartPage from './StartPage'
-import TabularCreater from './Tabular/creater'
 import TabularEditor from './Tabular/editor'
+import TabularFieldEditor from './TabularField/editor'
 import QuestionCreater from './question/creater'
 import Sign from './Sign'
 import Home from './Home'
 import './index.less'
 import {
-    Router,
-    Route,
-    Link
-} from 'react-router-dom';
-import {history} from './router';
+    HashRouter,
+    Route
+} from 'react-keeper';
+import PrivateRoute from './common/PrivateRoute';
 export default class App extends React.Component {
     render() {
         return (
-            <Router history={history}>
+            <HashRouter >
                 <div className="page-wrapper">
-                    <Route path="/home" component={Home} />
-                    <Route path="/question/creater" component={QuestionCreater} />
-                    <Route path="/tabular/editor" component={TabularEditor} />
-                    <Route path="/tabular/creater" component={TabularCreater} />
+                    <PrivateRoute cache path="/home" component={Home} />
+                    <PrivateRoute cache path="/question/create" component={QuestionCreater} />
+                    <PrivateRoute path="/tabular/editor" component={TabularEditor} />
+                    <PrivateRoute cache path="/tabular/field/editor" component={TabularFieldEditor} />
                     <Route path="/signIn" component={Sign} />
-                    <Route exact path="/" component={StartPage} />
+                    <Route index component={StartPage} />
                 </div>
-            </Router>
-
+            </HashRouter>
         )
     }
-}
+}   

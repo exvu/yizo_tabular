@@ -1,8 +1,7 @@
 import React from 'react'
 import './index.less'
 import { NavBar, List, InputItem } from 'antd-mobile';
-import { Link } from 'react-router-dom';
-import { history } from '../../router'
+import { Link,Control} from 'react-keeper';
 export default class TabularEditor extends React.Component {
 
     title = "编辑表单";
@@ -14,7 +13,7 @@ export default class TabularEditor extends React.Component {
             <div className="navbar-page">
                 <NavBar
                     onLeftClick={() => {
-                        history.goBack();
+                        Control.go(-1);
                     }}
                     {...this.props}
                     mode="dark"

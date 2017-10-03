@@ -1,0 +1,8 @@
+##是不是用户
+##id 用户id
+#is_user
+
+SELECT
+  *
+FROM users
+WHERE id=? and `_d` =0;

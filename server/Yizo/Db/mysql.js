@@ -19,13 +19,13 @@ module.exports = class Mysql {
         if (!pool) {
             pool = mysqlUtil.createPool(config);
             pool.on('acquire', function (connection) {
-                console.log(`连接${connection.threadId}获取`);
+                // console.log(`连接${connection.threadId}获取`);
             });
             pool.on('enqueue', function () {
-                console.log('等待获取连接');
+                // console.log('等待获取连接');
             });
             pool.on('release', function (connection) {
-                console.log('连接%d已释放', connection.threadId);
+                // console.log('连接%d已释放', connection.threadId);
             });
         }
         //事务开启标示
@@ -73,11 +73,10 @@ module.exports = class Mysql {
             //保存sql语句
             this.sqls.push(query.sql);
         }).catch(async (error) => {
-            console.log(error)
+            // console.log(error)
             this.transFlag && await this.rollback();
             //释放连接
 
-            console.log(this.connection)
             this.connection = null;
             throw error;
         });

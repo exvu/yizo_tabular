@@ -2,7 +2,7 @@ import React from 'react'
 import './index.less'
 import { List, InputItem, Switch, TextareaItem } from 'antd-mobile';
 import { createForm } from 'rc-form';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-keeper';
 import NavBarPage from '../../common/NavBarPage';
 import { Icon, Button } from '../../common';
 class QuestionCreater extends React.Component {

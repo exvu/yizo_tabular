@@ -1,5 +1,12 @@
 import api from '../config/api';
 import cache from './cache';
+import code from './code';
+import mes from './mes';
+
+let codes = {};
+for (let key in code) {
+    codes[code[key]] = mes[key];
+}
 //解析键值对
 function parseData(key, value) {
     let ret = { key: key, values: [] };
@@ -37,23 +44,45 @@ function makeData(_url, method, params, { blobName = {} }) {
 //发起请求
 function dofetch(_url, method, params = {}, desc) {
 
+    params = JSON.parse(JSON.stringify(params));
     return new Promise((resolve, reject) => {
         let { url, body } = makeData(_url, method, params, desc);
+
+        //替换url参数
+        let arr = url.match(/\/:[a-zA-Z][0-9a-zA-Z]+/g);
+        if (params && arr != null) {
+            for (let k in arr) {
+                if (arr[k].substring(2) in params) {
+                    url = url.replace(arr[k], '/' + params[arr[k].substring(2)]);
+                    delete params[arr[k].substring(2)];
+                }
+            }
+        }
         let codeStatus = 200;
         fetch(api.host + url, {
             method,
             mode: "cors",
             headers: {
-                'token': cache.local.getItem("token")
+                'access-token': cache.local.getItem("access-token")
             },
             ...(method !== 'GET') ? { body } : {}
         }).then(res => {
             codeStatus = res.status;
+            //查看是否存在token
+            let newToken = res.headers.get('access-token');
+
+            if (newToken) {
+                cache.local.setItem('access-token', newToken);
+            }
             return res.json();
         }).then(result => {
 
             if (result.err) throw new Error(result.err);
-            resolve(result);
+            if (result.code == 0) {
+                resolve(result.data);
+            } else {
+                throw new Error(codes[result.code]);
+            }
         }).catch(e => {
             switch (e.message) {
                 case 'Failed to fetch':

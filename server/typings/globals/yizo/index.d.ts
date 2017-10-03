@@ -5,6 +5,10 @@ class Controller {
     json(data: any): void;
     status(code: Number): void;
     header(key: String, value: any): void;
+    reqUser:{
+        id:any,
+        type:any
+    }
 }
 class Mysql {
     escape(value: String): String;

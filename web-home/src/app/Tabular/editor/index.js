@@ -1,127 +1,118 @@
 import React from 'react'
 import './index.less'
-import { List, InputItem } from 'antd-mobile';
-import { Link } from 'react-router-dom';
+import { List, InputItem, Toast, DatePicker } from 'antd-mobile';
+import { Link, Control } from 'react-keeper';
 import NavBarPage from '../../common/NavBarPage';
-import { Icon } from '../../common';
-import QuestTypeList from '../../questionType/list';
-let data = [
-    {
-        id: 1,
-        name: "姓名",
-        type: 'input'
-    },
-    {
-        id: 2,
-        name: "年龄",
-        type: 'inputNumber'
-    },
-    {
-        id: 3,
-        name: "性别",
-        type: 'radio'
-    },
-    {
-        id: 4,
-        name: "家庭住址",
-        type: 'input'
-    },
-    {
-        id: 5,
-        name: "出生日期",
-        type: 'datetime'
-    },
-]
-export default class TabularEditor extends React.Component {
+import { createForm } from 'rc-form';
+import TabularApi from '../../../sources/lib/services/tabular';
+export default createForm()(
+    class TabularEditor extends React.Component {
+        constructor(props) {
+            super(props);
+            let { type, ...data } = Control.state;
+            data['end_time'] = new Date(data['end_time'])
+            this.state = {
+                type, data
+            }
+        }
+        async submit() {
+            const { type, data } = this.state;
+            Toast.loading(type == 'create' ? "创建中" : "修改中")
+            this.props.form.validateFields(async (error, value) => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentItem: null,
-            data: data,
-            typeListShow: false
+                if (error) {
+                    for (let key in error) {
+                        Toast.info(this.props.form.getFieldError(key)[0])
+                        return;
+                    }
+                }
+                try {
+
+                    switch (type) {
+                        case "create": {
+                            Toast.loading("创建中")
+                            let result = await TabularApi.add(this.props.form.getFieldsValue());
+                            if (!result) {
+                                throw new Error("创建失败")
+                            }
+                            Control.go("/tabular/field/editor", { id: result })
+                            break;
+                        }
+                        case "editor": {
+                            Toast.loading("修改中")
+                            let result = await TabularApi.update({ id: data.id, ...this.props.form.getFieldsValue() });
+                            if (!result) {
+                                throw new Error("修改失败")
+                            }
+                            Toast.success("修改成功");
+                            setTimeout(() => {
+                                Control.go(-1)
+                            }, 2000);
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    Toast.fail(e.message)
+                }
+            });
+        }
+        onOk = (date) => {
+            console.log('onOk', date);
+          }
+        render() {
+            const { getFieldProps, getFieldError } = this.props.form;
+            const { type, data } = this.state;
+            console.log(data)
+            return (
+                <NavBarPage >
+                    <List renderHeader={() => type == 'create' ? '创建表单' : '修改表单'}>
+                        <InputItem
+                            clear
+                            placeholder="标题"
+                            {...getFieldProps('title', {
+                                initialValue: data.title || "",
+                                rules: [{
+                                    required: true,
+                                    message: "标题不能为空"
+                                }]
+                            }) }
+                            autoFocus
+                        >标题</InputItem>
+                        <InputItem
+                            clear
+                            placeholder="欢迎词"
+                            {...getFieldProps('explanation', {
+                                initialValue: data.explanation || "",
+                                rules: [{
+                                    required: true,
+                                    message: "欢迎词不能为空"
+                                }]
+                            }) }
+                        >欢迎词</InputItem>
+                        {/* <DatePicker mode="datetime"
+                        onOk={()=>{
+
+                        }}
+                            {...getFieldProps('end_time', {
+                            initialValue: data.end_time,
+                            rules: [
+                              { required: true, message: '请选择截止时间' },
+                            ],
+                          })}
+                        >
+                            <List.Item arrow="horizontal">截止时间</List.Item>
+                        </DatePicker> */}
+                        <List.Item>
+                            <div
+                                style={{ width: '100%', color: '#108ee9', textAlign: 'center' }}
+                                onClick={this.submit.bind(this)}
+                            >
+                                {type == 'create' ? "创建" : "修改"}
+                            </div>
+                        </List.Item>
+                    </List>
+                </NavBarPage>
+            )
         }
     }
-    delQuest() {
-        const { currentItem } = this.state;
-        data.splice(currentItem, 1);
-        this.setState({
-            data,
-            currentItem: null
-        })
-    }
-    shiftQuest(type) {
-        const { currentItem } = this.state;
-        let index = type == "down" ? (currentItem + 1) : (currentItem - 1);
-        if (currentItem >= 0 && currentItem < data.length && index >= 0 && index < data.length) {
-            let d = data[index];
-            data[index] = data[currentItem];
-            data[currentItem] = d;
-            this.setState({
-                data,
-                currentItem: index
-            })
-        }
-    }
-    render() {
-        const { currentItem, data, typeListShow } = this.state;
-        return (
-            <NavBarPage rightContent={<div>提交</div>}>
-                <div className="tabular-editor">
-                    <div className="tabular-mes">
-                        <div className="title">表单1</div>
-                        <div className="desc">啊三大发射点发生克林顿和法律上看到合肥卢卡斯的恢复i卡死还是大开发建设的快乐复活节阿斯科利的积分阿里斯顿</div>
-                    </div>
-                    <div className="quest-list">
-                        {data.map((item, index) => {
-                            return (
-                                <div className="quest-item" key={index+""}>
-                                    <div className="mes" onClick={() => {
-                                        this.setState({
-                                            currentItem: currentItem == index ? null : index
-                                        })
-                                    }} >
-                                        <div className="left">
-                                            <span className="number">{index + 1}.</span>
-                                            <span className="name">{item.name}</span>
-                                        </div>
-                                        <Icon type="expand" color="#999999" />
-                                    </div>
-                                    {currentItem == index && (
-                                        <div className="tool-bar">
-                                            <div className="tool-item">
-                                                <Icon type="editor-circle-o" />
-                                                <span>编辑</span>
-                                            </div>
-                                            <div
-                                                className={"tool-item " + (currentItem > 0 ? "" : 'disabled')}
-                                                onClick={this.shiftQuest.bind(this, 'up')}>
-                                                <Icon type="shift-up-o" />
-                                                <span>上移</span>
-                                            </div>
-                                            <div
-                                                className={"tool-item " + (currentItem < data.length - 1 ? "" : 'disabled')}
-                                                onClick={this.shiftQuest.bind(this, 'down')}>
-                                                <Icon type="shift-down-o" />
-                                                <span>下移</span>
-                                            </div>
-                                            <div className="tool-item" onClick={this.delQuest.bind(this)}>
-                                                <Icon type="del-circle-o" />
-                                                <span>删除</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div className="add-question" onClick={() => this.setState({ typeListShow: !typeListShow })}>
-                        <Icon type="add-circle-o" color="#108ee9" />
-                        <span>添加选项</span>
-                    </div>
-                </div>
-                {typeListShow && <QuestTypeList onClose={() => this.setState({ typeListShow: false })}/> }
-            </NavBarPage>
-        )
-    }
-}
+)

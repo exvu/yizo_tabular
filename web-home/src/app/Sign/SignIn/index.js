@@ -1,10 +1,10 @@
 import React from 'react'
-import {Toast} from 'antd-mobile';
-import { history } from '../../router';
+import { Toast } from 'antd-mobile';
+import { Control } from 'react-keeper';
 import { Button } from '../../common';
 import UserApi from '../../../sources/lib/services/user';
 import { createForm } from 'rc-form';
-
+import cache from '../../../sources/lib/cache';
 class SignIn extends React.Component {
 
     constructor(props) {
@@ -13,14 +13,14 @@ class SignIn extends React.Component {
             account: null,
             password: null
         }
+        cache.local.getItem("access-token") && Control.go('/home');
     }
-     onSubmit() {
-
-
+    onSubmit() {
+        Toast.loading("登录中")
         this.props.form.validateFields(async (error, value) => {
 
-            if(error){
-                for(let key in error){
+            if (error) {
+                for (let key in error) {
                     Toast.info(this.props.form.getFieldError(key)[0])
                     return;
                 }
@@ -28,12 +28,16 @@ class SignIn extends React.Component {
             try {
                 let data = await UserApi.signIn(this.props.form.getFieldsValue());
 
-                console.log(data);
+                Toast.success("登录成功");
+
+                setTimeout(() => {
+                    Control.go('/home');
+                }, 3000);
             } catch (e) {
-                console.log(e)
+                Toast.fail(e.message)
             }
         });
-        
+
     }
     render() {
         const { getFieldProps, getFieldError } = this.props.form;
@@ -50,7 +54,7 @@ class SignIn extends React.Component {
                         }) } />
                     </div>
                     <div className="form-item">
-                        <input placeholder="密码"{...getFieldProps('password', {
+                        <input type="password" placeholder="密码"{...getFieldProps('password', {
                             initialValue: "",
                             rules: [{
                                 required: true,

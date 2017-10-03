@@ -75,22 +75,12 @@ class Interface {
                     }
                     //當存在參數驗證條件時 对参数进行验证
                     if ("verify" in args) {
-
-                        let { type = null } = controller.reqUser;
-                        //将公用的参数验证和不同身份的参数验证合并
-                        let verify = Object.assign(args.verify['base'] || {}, args.verify[type || 'user'] || {});
-                        for (let key in args.verify) {
-
-                            if (Object.prototype.toString.call(args.verify[key]) === '[object Array]') {
-                                verify[key] = args.verify[key];
-                            }
-                        }
-                        params = Validate.autoCheck(params, verify);
+                        let type =req.header('type');
+                        params = Validate.autoCheck(params,args.verify);
                     }
                     //执行action方法 將請求參數傳遞給指定的控制器方法
                     await controller[router.action](params);
                 } catch (err) {
-                    console.log(err);
                     //如果是自定義的異常錯誤  就返回錯誤信息 否則返回通用異常
                     res.status(err.code / 1000 == 5 ? 500 : 200);
                     let returnMessage = {

@@ -42,6 +42,7 @@
     "file-loader": "^0.11.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-keeper": "^2.1.6",
     "react-router-dom": "^4.2.2",
     "url-loader": "^0.5.9"
   }

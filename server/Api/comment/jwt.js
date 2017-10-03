@@ -49,15 +49,15 @@ async function  verifyToken(token = '') {
     //         token = makeToken(payload, secret);
 
     //     } else {
-    //         throw new jike.BaseError(Code.TOKEN_INVALID);
+    //         throw new yizo.BaseError(Code.TOKEN_INVALID);
     //     }
     // }
 
     console.log(payload)
     let model = new Model();
-    let [user=null] = await model.query(sqls.account[`is_${payload.type}`], payload['sub']);
+    let [user=null] = await model.query(sqls.account[`is_${payload.type}`], payload['id']);
     if(!user){
-        throw new jike.BaseError(Code.UNAUTH);
+        throw new yizo.BaseError(Code.UNAUTH);
     }
     return {...user,type:payload.type};
 }

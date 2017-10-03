@@ -1,7 +1,7 @@
 import React from 'react'
 import './index.less'
 import { TabBar, NavBar } from 'antd-mobile';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-keeper';
 import TabularList from '../Tabular/list';
 import { Icon } from '../common';
 import Mine from '../Mine';
@@ -46,11 +46,11 @@ export default class Home extends React.Component {
                 }}>
                     <div className="popup-innner">
                         <div className="popup-item">
-                            <Link to="/tabular/creater">创建表单</Link>
+                            <Link to="/tabular/editor" state={{type:'create'}}>创建表单</Link>
                         </div>
-                        <div className="popup-item">
+                        {/* <div className="popup-item">
                             <Link to="#">创建问卷</Link>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <TabBar

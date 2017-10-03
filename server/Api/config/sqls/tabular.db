@@ -1,0 +1,24 @@
+##添加表单
+#add
+insert into tabular set ?
+
+
+##获取总数
+#count
+select count(*) as count from tabular
+
+
+##获取表单列表
+#list
+SELECT * FROM tabular
+
+##修改表单信息
+#update
+update tabular set ?
+
+##删除表单
+#del
+delete from tabular where id in (?)
+##添加字段
+#addField
+insert into tabular_field set ?
