@@ -30,7 +30,7 @@ export default createForm()(
 
                     switch (type) {
                         case "create": {
-                            Toast.loading("创建中")
+                            Toast.loading("创建中...")
                             let result = await TabularApi.add(this.props.form.getFieldsValue());
                             if (!result) {
                                 throw new Error("创建失败")
@@ -39,7 +39,7 @@ export default createForm()(
                             break;
                         }
                         case "editor": {
-                            Toast.loading("修改中")
+                            Toast.loading("修改中...")
                             let result = await TabularApi.update({ id: data.id, ...this.props.form.getFieldsValue() });
                             if (!result) {
                                 throw new Error("修改失败")
@@ -47,7 +47,7 @@ export default createForm()(
                             Toast.success("修改成功");
                             setTimeout(() => {
                                 Control.go(-1)
-                            }, 2000);
+                            }, 1000);
                             break;
                         }
                     }

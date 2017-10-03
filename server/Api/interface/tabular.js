@@ -40,6 +40,14 @@ Interface.create('/tabular', TabularController, [
     needToken: true
   }),
   /**
+   * 获取指定表单信息
+   */
+  Route("/:id",'get',"info",{
+    verify:{
+    },
+    needToken:true
+  }),
+  /**
    * 添加
    */
   Route('/', 'post', 'add', {
@@ -106,7 +114,7 @@ Interface.create('/tabular', TabularController, [
     needToken: true
   }),
   /**
-   * 添加题目
+   * 添加字段
    */
   Route('/field', 'post', 'addField', {
     verify: {
@@ -154,5 +162,39 @@ Interface.create('/tabular', TabularController, [
       }
     },
     needToken: true
+  }),
+  /**
+   * 字段排序
+   */
+  Route('/field/sort/:id','put','sortField',{
+    verify:{
+      field_id:{
+        mode: Validate.MUST_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      type:{
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
+    needToken:false
+  }),
+  /**
+   * 删除字段
+   */
+  Route("/field",'delete','deleteField',{
+    verify:{
+      ids:{
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
+    needToken:true
   })
 ])

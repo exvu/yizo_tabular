@@ -28,7 +28,7 @@ interface router {
     action: String,
     args: Object
 }
-declare function Route(name: String, method: String, action: String, args: { verify: Object<{ mode: Number, rule: Array }>, needToken: Boolean }): router
+declare function Route(name: String, method: String, action: String, args?: { verify?: Object<{ mode: Number, rule: Array }>, needToken?: Boolean }): router
 class Interface {
     static init(app: any);
     static create(path: String, controllerClass: any, routers: Route[]);

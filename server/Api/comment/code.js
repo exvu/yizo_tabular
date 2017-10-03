@@ -34,5 +34,7 @@ module.exports = {
     //头像类型不正确
     AVATAR_TYPE_ERR:1200,
     ORDER_TYPE_ERR:2000,
-    NOT_OWN_ERR:2001
+    NOT_OWN_ERR:2001,
+    //数据不存在
+    NOT_FOUND_ERR:4001
 }

@@ -19,6 +19,40 @@ update tabular set ?
 ##删除表单
 #del
 delete from tabular where id in (?)
+
+##获取表单字段
+#fieldsList
+SELECT
+  id,
+  sort_id,
+  field_name,
+  field_type,
+  explanation,
+  `require`,
+  `default`,
+  options
+FROM tabular_field
+
 ##添加字段
 #addField
 insert into tabular_field set ?
+
+##字段排序统一排序
+#fieldsSort  
+UPDATE tabular_field
+SET sort_id = CASE id
+  ?
+  END
+WHERE id IN (?)
+
+##更新字段表
+#fieldUpdate
+update tabular_field set ?
+
+##获取字段条数
+#fieldCount
+select count(*) as count from tabular_field
+
+##删除字段
+#deleteField
+delete from tabular_field where id in (?)

@@ -5,18 +5,18 @@ import { Link } from 'react-keeper';
 import NavBarPage from '../../common/NavBarPage';
 import { Icon } from '../../common';
 let data = [
-    {
-        id: 1,
-        name: '单选题',
-        type: 'radio',
-        icon: <Icon type="dan-circle-o" />
-    },
-    {
-        id: 2,
-        name: '多选题',
-        type: 'check',
-        icon: <Icon type="duo-circle-o" />
-    },
+    // {
+    //     id: 1,
+    //     name: '单选题',
+    //     type: 'radio',
+    //     icon: <Icon type="dan-circle-o" />
+    // },
+    // {
+    //     id: 2,
+    //     name: '多选题',
+    //     type: 'check',
+    //     icon: <Icon type="duo-circle-o" />
+    // },
     {
         id: 3,
         name: '填空题',
@@ -30,18 +30,21 @@ export default class QuestTypeList extends React.Component {
     render() {
         return (
             <div className="questions" onClick={this.props.onClose}>
-                <div className="quest-type-list">
-                    {data.map((item) => (
-                        <div className="type-item" key={item.id}>
-                            {item.icon}
-                            <div>{item.name}</div>
-                        </div>
-                    ))}
-                </div>
-                <div className="close" onClick={() => {
-                    this.props.onClose();
-                }}>
-                    <Icon type="close-o" />
+                <div className="type-box">
+                    <div className="header">选择题目类型</div>
+                    <div className="quest-type-list">
+                        {data.map((item) => (
+                            <div className="type-item" key={item.id}>
+                                {item.icon}
+                                <div>{item.name}</div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="close" onClick={() => {
+                        this.props.onClose();
+                    }}>
+                        <Icon type="close-o" />
+                    </div>
                 </div>
             </div>
         )

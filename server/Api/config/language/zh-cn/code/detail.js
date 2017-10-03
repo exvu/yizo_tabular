@@ -28,9 +28,7 @@ module.exports = {
 
 
 
-
-
-
+     NOT_FOUND_ERR:"数据不存在",
 
      NOT_CHANGE:"服务器没有做任何操作",
      //参数错误

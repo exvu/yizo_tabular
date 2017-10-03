@@ -119,7 +119,7 @@ export default class TabularList extends React.Component {
                                             <p>暂停</p>
                                         </a>
                                     )}
-                                    <Link className="tool-item" to="/tabular/editor" state={{type:'editor',...item}}>
+                                    <Link className="tool-item" to="/tabular/field/list" state={{...item}}>
                                         <Icon type="editor-circle-o" />
                                         <p>编辑</p>
                                     </Link>

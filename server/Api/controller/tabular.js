@@ -21,6 +21,14 @@ module.exports = class TabularController extends yizo.Controller {
         return this.json(result);
     }
     /**
+     * 获取基本信息
+     */
+    async info({id}){
+        let model = new TabularModel();
+        let data = await model.info(id);
+        return this.json(data);
+    }
+    /**
      * 添加表单
      * @param {*} param0 
      */
@@ -47,7 +55,7 @@ module.exports = class TabularController extends yizo.Controller {
         return this.json(result);
     }
     /**
-     * 添加题目
+     * 添加字段
      */
     async addField({tabular_id,name,type,explanation,require,default_value,options}){
 
@@ -55,5 +63,23 @@ module.exports = class TabularController extends yizo.Controller {
         let result = await model.addField({tabular_id,name,type,explanation,require,default_value,options});
         return this.json(result);
 
+    }
+    /**
+     * 字段排序
+     */
+    async sortField({id,field_id,type='down'}){
+        let model  = new TabularModel();
+        let result = await model.sortField({id,field_id,type});
+        return this.json(result);
+    }
+    /**
+     * 删除字段
+     */
+    async deleteField({ids}){
+        //转换为数组
+        ids = (ids+'').split(',');
+        let model  = new TabularModel();
+        let result = await model.deleteField(ids);
+        return this.json(result);
     }
 }
