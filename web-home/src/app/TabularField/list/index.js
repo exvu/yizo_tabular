@@ -23,7 +23,7 @@ export default class TabularFieldList extends React.Component {
     async loadData() {
         try {
             Toast.loading("获取信息中...");
-            let { id } = this.props.params;
+            let { tid:id } = this.props.params;
             let data = await TabularApi.info({ id });
             this.setState({
                 data
@@ -38,10 +38,10 @@ export default class TabularFieldList extends React.Component {
         try{
             Toast.loading("删除中...");
             let { currentItem,data } = this.state;
-            let  { fields } = data;
+            let  { fields,id } = data;
             //删除字段
             console.log(currentItem,fields[currentItem])
-            let result = await TabularApi.deleteField({ids:fields[currentItem]['id']})
+            let result = await TabularApi.deleteField({id,ids:fields[currentItem]['id']})
             if (!result) {
                 throw new Error("删除失败");
             }
@@ -62,7 +62,7 @@ export default class TabularFieldList extends React.Component {
         if (currentItem >= 0 && currentItem < fields.length && index >= 0 && index < fields.length) {
             try {
                 Toast.loading("移动中...");
-                let result = await TabularApi.sortField({ id, field_id: fields[currentItem]['id'], type });
+                let result = await TabularApi.sortField({ id:id, field_id: fields[currentItem]['id'], type });
                 if (!result) {
                     throw new Error("移动失败");
                 }
@@ -85,14 +85,14 @@ export default class TabularFieldList extends React.Component {
     }
     render() {
         const { currentItem, data, typeListShow, } = this.state;
-        const {id} = this.props.params;
+        const {tid} = this.props.params;
         const { title, explanation, fields = [] } = data || {};
         return (
-            <NavBarPage rightContent={<div>提交</div>} title="编辑表单">
+            <NavBarPage title="编辑表单">
                 {this.state.data && (
                     <div className="tabular-editor">
                     <div className="tabular-mes" onClick={()=>{
-                        Control.go(`/tabular/editor/${id}`,data)    
+                        Control.go(`/tabular/${tid}/editor`,data)    
                     }}>
                         <div className="title">{title}</div>
                         <div className="desc">{explanation}</div>
@@ -115,7 +115,7 @@ export default class TabularFieldList extends React.Component {
                                     {currentItem == index && (
                                         <div className="tool-bar">
                                             <div className="tool-item" onClick={()=>{
-                                                Control.go(`tabular/field/editor/${id}`,data[currentItem])
+                                                Control.go(`tabular/${tid}/field/editor/${data.fields[currentItem]['id']}`,data.fields[currentItem])
                                                 }}>
                                                 <Icon type="editor-circle-o" />
                                                 <span>编辑</span>
@@ -148,7 +148,7 @@ export default class TabularFieldList extends React.Component {
                     </div>
                 </div>
                 )}
-                {typeListShow && <QuestTypeList id={id} onClose={() => this.setState({ typeListShow: false })} />}
+                {typeListShow && <QuestTypeList tid={tid} onClose={() => this.setState({ typeListShow: false })} />}
             </NavBarPage>
         )
     }

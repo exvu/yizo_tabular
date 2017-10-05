@@ -34,5 +34,20 @@ module.exports = {
     //头像类型不正确
     AVATAR_TYPE_ERR:1200,
     ORDER_TYPE_ERR:2000,
-    NOT_OWN_ERR:2001
+    NOT_OWN_ERR:2001,
+     //数据不存在
+    NOT_FOUND_ERR:4001,
+    //请求成功
+    SUCCESS: 0,
+    NOT_CHANGE:1,
+    //参数错误
+    PARAMS_ERR:3000,
+    //API不存在
+    API_NOTFOUND:4000,
+    //服务器错误
+    SERVER_ERR:5000,
+    //连接数据库超时
+    CON_DB_TIMEOUT:5001,
+    SQL_ERR:5002,
+    UN_KNOWN_ERROR:5003
 }

@@ -16,12 +16,14 @@ export default createForm()(
             }
         }
         async componentWillMount() {
-            await this.loadData()
+            if('tid' in this.props.params){
+                await this.loadData()
+            }
         }
         async loadData() {
             try {
                 Toast.loading("获取信息中...");
-                let { id } = this.props.params;
+                let { tid:id } = this.props.params;
                 let data = await TabularApi.info({ id });
                 this.setState({
                     data
@@ -33,7 +35,7 @@ export default createForm()(
         }
         async submit() {
             const { type, data } = this.state;
-            Toast.loading('id' in this.props.params ? "修改中" : "创建中")
+            Toast.loading('tid' in this.props.params ? "修改中" : "创建中")
             this.props.form.validateFields(async (error, value) => {
                 if (error) {
                     for (let key in error) {
@@ -42,7 +44,7 @@ export default createForm()(
                     }
                 }
                 try {
-                    if ('id' in this.props.params) {
+                    if ('tid' in this.props.params) {
                         Toast.loading("修改中...")
                         let result = await TabularApi.update({ id: data.id, ...this.props.form.getFieldsValue() });
                         if (!result) {
@@ -73,7 +75,7 @@ export default createForm()(
             const { data } = this.state;
             console.log(data)
             return (
-                <NavBarPage title={'id' in this.props.params ? '修改表单' : '创建表单'}>
+                <NavBarPage title={'tid' in this.props.params ? '修改表单' : '创建表单'}>
                     <List >
                         <InputItem
                             clear
@@ -116,7 +118,7 @@ export default createForm()(
                                 style={{ width: '100%', color: '#108ee9', textAlign: 'center' }}
                                 onClick={this.submit.bind(this)}
                             >
-                                {'id' in this.props.params ? "修改" : "创建"}
+                                {'tid' in this.props.params ? "修改" : "创建"}
                             </div>
                         </List.Item>
                     </List>

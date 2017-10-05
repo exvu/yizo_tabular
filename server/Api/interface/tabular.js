@@ -116,21 +116,15 @@ Interface.create('/tabular', TabularController, [
   /**
    * 添加字段
    */
-  Route('/field', 'post', 'addField', {
+  Route('/:id/field', 'post', 'addField', {
     verify: {
-      tabular_id: {
+      field_name: {
         mode: Validate.MUST_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
         ]
       },
-      name: {
-        mode: Validate.MUST_VALIDATE,
-        rule: [
-          ['require', 'paramsNotNullErr']
-        ]
-      },
-      type: {
+      field_type: {
         mode: Validate.MUST_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
@@ -142,20 +136,64 @@ Interface.create('/tabular', TabularController, [
           ['require', 'paramsNotNullErr']
         ]
       },
-      require: {
-        mode: Validate.MUST_VALIDATE,
+      required: {
+        mode: Validate.EXISTS_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
         ]
       },
       default_value: {
-        mode: Validate.MUST_VALIDATE,
+        mode: Validate.EXISTS_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
         ]
       },
       options: {
-        mode: Validate.MUST_VALIDATE,
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
+    needToken: true
+  }),
+  /**
+   * 修改字段
+   */
+  Route('/(:tid)/field/(:fid)', 'put', 'updateField', {
+    verify: {
+      field_name: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      field_type: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      explanation: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      required: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      default_value: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      options: {
+        mode: Validate.EXISTS_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
         ]
@@ -166,7 +204,7 @@ Interface.create('/tabular', TabularController, [
   /**
    * 字段排序
    */
-  Route('/field/sort/:id','put','sortField',{
+  Route('/:id/field/sort','put','sortField',{
     verify:{
       field_id:{
         mode: Validate.MUST_VALIDATE,
@@ -186,10 +224,10 @@ Interface.create('/tabular', TabularController, [
   /**
    * 删除字段
    */
-  Route("/field",'delete','deleteField',{
+  Route("/:tid/field",'delete','deleteField',{
     verify:{
       ids:{
-        mode: Validate.EXISTS_VALIDATE,
+        mode: Validate.MUST_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
         ]

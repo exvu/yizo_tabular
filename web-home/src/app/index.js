@@ -4,7 +4,6 @@ import StartPage from './StartPage'
 import TabularEditor from './Tabular/editor'
 import TabularFieldList from './TabularField/list'
 import TabularFieldEditor from './TabularField/editor'
-import QuestionCreater from './question/creater'
 import Sign from './Sign'
 import Home from './Home'
 import './index.less'
@@ -18,13 +17,12 @@ export default class App extends React.Component {
         return (
             <HashRouter >
                 <div className="page-wrapper">
-                    <PrivateRoute  path="/home" component={Home} />
-                    <PrivateRoute  path="/question/create" component={QuestionCreater} />
-                    <PrivateRoute path="/tabular/editor/:id" component={TabularEditor} />
+                    <PrivateRoute path="/home" component={Home} />
+                    <PrivateRoute path="/tabular/:tid/field/list" component={TabularFieldList} />
+                    <PrivateRoute path="/tabular/:tid/editor" component={TabularEditor} />
                     <PrivateRoute path="/tabular/create" component={TabularEditor} />
-                    <PrivateRoute  path="/tabular/field/list/:id" component={TabularFieldList} />
-                    <PrivateRoute  path="/tabular/field/create/:id" component={TabularFieldEditor} />
-                    <PrivateRoute  path="/tabular/field/editor/:id" component={TabularFieldEditor} />
+                    <PrivateRoute path="/tabular/:tid/field/create" component={TabularFieldEditor} />
+                    <PrivateRoute path="/tabular/:tid/field/editor/:fid" component={TabularFieldEditor} />
                     <Route path="/signIn" component={Sign} />
                     <Route index component={StartPage} />
                 </div>

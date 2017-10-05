@@ -46,7 +46,7 @@ export default class Home extends React.Component {
                 }}>
                     <div className="popup-innner">
                         <div className="popup-item">
-                            <Link to="/tabular/editor" state={{type:'create'}}>创建表单</Link>
+                            <Link to="/tabular/create" state={{type:'create'}}>创建表单</Link>
                         </div>
                         {/* <div className="popup-item">
                             <Link to="#">创建问卷</Link>

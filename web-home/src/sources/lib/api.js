@@ -46,18 +46,19 @@ function dofetch(_url, method, params = {}, desc) {
 
     params = JSON.parse(JSON.stringify(params));
     return new Promise((resolve, reject) => {
-        let { url, body } = makeData(_url, method, params, desc);
-
+        
         //替换url参数
-        let arr = url.match(/\/:[a-zA-Z][0-9a-zA-Z]+/g);
+        let arr = _url.match(/\/:[a-zA-Z][0-9a-zA-Z]+/g);
         if (params && arr != null) {
             for (let k in arr) {
                 if (arr[k].substring(2) in params) {
-                    url = url.replace(arr[k], '/' + params[arr[k].substring(2)]);
+                    _url = _url.replace(arr[k], '/' + params[arr[k].substring(2)]);
                     delete params[arr[k].substring(2)];
                 }
             }
         }
+        
+        let { url, body } = makeData(_url, method, params, desc);
         let codeStatus = 200;
         fetch(api.host + url, {
             method,

@@ -28,8 +28,8 @@ SELECT
   field_name,
   field_type,
   explanation,
-  `require`,
-  `default`,
+  required,
+  default_value,
   options
 FROM tabular_field
 
@@ -46,7 +46,7 @@ SET sort_id = CASE id
 WHERE id IN (?)
 
 ##更新字段表
-#fieldUpdate
+#updateField
 update tabular_field set ?
 
 ##获取字段条数
@@ -55,4 +55,4 @@ select count(*) as count from tabular_field
 
 ##删除字段
 #deleteField
-delete from tabular_field where id in (?)
+delete from tabular_field

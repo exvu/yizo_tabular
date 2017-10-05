@@ -36,7 +36,7 @@ export default class QuestTypeList extends React.Component {
                     <div className="quest-type-list">
                         {data.map((item) => (
                             <Link
-                            to={`/tabular/field/create/${this.props.id}`}
+                            to={`/tabular/${this.props.tid}/field/create`}
                             className="type-item" 
                             key={item.id}
                             >

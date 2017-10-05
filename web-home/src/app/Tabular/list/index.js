@@ -51,6 +51,25 @@ export default class TabularList extends React.Component {
             Toast.fail(e.message);
         }
     }
+    //删除
+    async delete(id){
+        let {data,showToolBarIndex} = this.state;
+        try {
+            Toast.loading("删除中...");
+            let result = await TabularApi.delete({ids:id+''});
+            if(!result){
+                throw new Error("删除失败");
+            }
+            delete data[showToolBarIndex];
+            this.setState({
+                data
+            })
+            Toast.hide();
+        } catch (e) {
+            console.log(e);
+            Toast.fail("获取数据失败");
+        }
+    }
     async loadData() {
         try {
             Toast.loading("获取数据中...");
@@ -119,7 +138,7 @@ export default class TabularList extends React.Component {
                                             <p>暂停</p>
                                         </a>
                                     )}
-                                    <Link className="tool-item" to={`/tabular/field/list/${item.id}`}>
+                                    <Link className="tool-item" to={`/tabular/${item.id}/field/list`}>
                                         <Icon type="editor-circle-o" />
                                         <p>编辑</p>
                                     </Link>
@@ -131,7 +150,7 @@ export default class TabularList extends React.Component {
                                         <Icon type="share-circle-o" />
                                         <p>分享</p>
                                     </a>
-                                    <a className="tool-item">
+                                    <a className="tool-item" onClick={ this.delete.bind(this,item.id)}>
                                         <Icon type="del-circle-o" />
                                         <p>删除</p>
                                     </a>

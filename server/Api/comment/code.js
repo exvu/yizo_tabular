@@ -1,4 +1,5 @@
 module.exports = {
+    SUCCESS: 0,
     //令牌错误
     TOKEN_ERR: 1000,
     //令牌失效
@@ -36,5 +37,17 @@ module.exports = {
     ORDER_TYPE_ERR:2000,
     NOT_OWN_ERR:2001,
     //数据不存在
-    NOT_FOUND_ERR:4001
+    NOT_FOUND_ERR:4001,
+
+    NOT_CHANGE:1,
+    //参数错误
+    PARAMS_ERR:3000,
+    //API不存在
+    API_NOTFOUND:4000,
+    //服务器错误
+    SERVER_ERR:5000,
+    //连接数据库超时
+    CON_DB_TIMEOUT:5001,
+    SQL_ERR:5002,
+    UN_KNOWN_ERROR:5003
 }

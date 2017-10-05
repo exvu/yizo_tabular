@@ -12,7 +12,7 @@ module.exports = class UserController extends yizo.Controller {
     let model = new UserModel();
     let data = await model.signIn({ account, password });
 
-    let token = jwt.makeToken({ id:data['uid'],_c:data['_c'], type: 'user' })
+    let token = jwt.makeToken({ id: data['uid'], _c: data['_c'], type: 'user' })
 
     this.header('access-token', token)
     return this.json(data)

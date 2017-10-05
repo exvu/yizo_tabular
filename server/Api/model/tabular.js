@@ -11,7 +11,7 @@ module.exports = class TabularModel extends yizo.Model {
         let whereStr = ` WHERE creater= ${this.escape(creater)} `;
         let limitStr = ` LIMIT ${page},${(page + 1) * pageSize} `;
 
-        let [count = 0] = await this.query(sqls.tabular.count + whereStr);
+        let [{ count = 0 } = {}] = await this.query(sqls.tabular.count + whereStr);
         if (count == 0) {
             return {
                 ...needPage ? { count: 0 } : {},
@@ -55,21 +55,51 @@ module.exports = class TabularModel extends yizo.Model {
      * 删除表单
      */
     async delete(ids) {
-        let { affectedRows = 0 } = await this.query(sqls.tabular.del, ids);
-        return affectedRows;
+        
+        await this.startTrans();
+        let { affectedRows:affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField+' where tabular_id in (?)',ids);
+        let { affectedRows:affectedRows2 = 0 } = await this.query(sqls.tabular.del, ids);
+        if(affectedRows1>=0 && affectedRows2>0){
+            await this.commit();
+            return true;
+        }
+        await this.rollback();
+        return false;
     }
     /**
      * 添加字段
      */
-    async addField({ tabular_id, title, type, explanation, require, default_value, options }) {
+    async addField({ tabular_id, field_name, field_type, explanation, required, default_value, options }) {
 
+
+        //获取条数
+        let [{ count = 0 } = {}] = await this.query(sqls.tabular.fieldCount + ` WHERE tabular_id=${tabular_id}`);
+        console.log(count)
         let { insertId = false } = await this.query(sqls.tabular.addField, {
             tabular_id,
-            field_name: name,
-            field_type: type,
-            explanation, require, default: default_value, options
+            field_name,
+            field_type,
+            sort_id: count + 1,
+            explanation, required, default_value, options
         })
         return insertId;
+    }
+    /**
+     * 修改字段
+     */
+    async updateField({ tid, fid, field_name, field_type, explanation, required, default_value, options }) {
+
+
+        let { affectedRows } = await this.query(sqls.tabular.updateField + ` WHERE id=${fid}`, {
+            tabular_id: tid,
+            field_name,
+            field_type,
+            explanation,
+            required,
+            default_value,
+            options
+        })
+        return affectedRows > 0;
     }
     /**
      * 字段排序呢
@@ -116,8 +146,41 @@ module.exports = class TabularModel extends yizo.Model {
     /**
      * 删除字段
      */
-    async deleteField(ids){
-        let {affectedRows=0} = await this.query(sqls.tabular.deleteField,ids)
-        return affectedRows>0;
+    async deleteField(tid,ids) {
+        try {
+            //开启事务
+            await this.startTrans();
+            //删除字段
+            let { affectedRows:affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField+' where id in (?)', ids);
+            //排序字段
+            //获取前后记录数据
+            let [{ sorts } = {}] = await this.query(
+                `select group_concat(id  ORDER BY sort_id) as sorts from tabular_field where tabular_id=${this.escape(tid)}`
+            );
+            sorts = sorts.toString("utf-8").split(',');
+            console.log(affectedRows1,sorts)
+            if (affectedRows1==0 || (sorts && sorts.length == 0)) {
+                await this.commit();
+                return true;
+            }
+            let whenthenStr = '';
+            //拼接sql语句
+            for (let i = 0; i < sorts.length; i++) {
+                whenthenStr += ` when id = ${sorts[i]} then ${i + 1} `;
+            }
+            let { affectedRows:affectedRows2= 0 } = await this.query(
+                `UPDATE tabular_field SET sort_id = CASE ` + whenthenStr + `END WHERE id in(?) and tabular_id = ?;`, sorts,tid
+            )
+            if(affectedRows1>0 && affectedRows2>0){
+                await this.commit();
+                return true;
+            }
+            await this.rollback();
+            return false;
+        } catch (e) {
+            console.log(e);
+            await this.rollback();
+            return false;
+        }
     }
 }

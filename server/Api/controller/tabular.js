@@ -50,19 +50,27 @@ module.exports = class TabularController extends yizo.Controller {
      */
     async delete({ids}){
         let model = new TabularModel();
-        ids = ids.split(',');
+        ids = (ids+'').split(',');
         let result = await model.delete(ids);
         return this.json(result);
     }
     /**
      * 添加字段
      */
-    async addField({tabular_id,name,type,explanation,require,default_value,options}){
+    async addField({id:tabular_id,field_name,field_type,explanation,required=0,default_value,options}){
 
         let model  = new TabularModel();
-        let result = await model.addField({tabular_id,name,type,explanation,require,default_value,options});
+        let result = await model.addField({tabular_id,field_name,field_type,explanation,required,default_value,options});
         return this.json(result);
 
+    }
+    /**
+     * 修改字段
+     */
+    async updateField({tid,fid,field_name,field_type,explanation,required=0,default_value,options}){
+        let model  = new TabularModel();
+        let result = await model.updateField({tid,fid,field_name,field_type,explanation,required,default_value,options});
+        return this.json(result);
     }
     /**
      * 字段排序
@@ -75,11 +83,11 @@ module.exports = class TabularController extends yizo.Controller {
     /**
      * 删除字段
      */
-    async deleteField({ids}){
+    async deleteField({tid,ids}){
         //转换为数组
         ids = (ids+'').split(',');
         let model  = new TabularModel();
-        let result = await model.deleteField(ids);
+        let result = await model.deleteField(tid,ids);
         return this.json(result);
     }
 }
