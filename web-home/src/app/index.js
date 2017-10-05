@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import StartPage from './StartPage'
 import TabularEditor from './Tabular/editor'
 import TabularFieldList from './TabularField/list'
+import TabularFieldEditor from './TabularField/editor'
 import QuestionCreater from './question/creater'
 import Sign from './Sign'
 import Home from './Home'
@@ -17,10 +18,13 @@ export default class App extends React.Component {
         return (
             <HashRouter >
                 <div className="page-wrapper">
-                    <PrivateRoute cache path="/home" component={Home} />
-                    <PrivateRoute cache path="/question/create" component={QuestionCreater} />
-                    <PrivateRoute path="/tabular/editor" component={TabularEditor} />
-                    <PrivateRoute cache path="/tabular/field/list" component={TabularFieldList} />
+                    <PrivateRoute  path="/home" component={Home} />
+                    <PrivateRoute  path="/question/create" component={QuestionCreater} />
+                    <PrivateRoute path="/tabular/editor/:id" component={TabularEditor} />
+                    <PrivateRoute path="/tabular/create" component={TabularEditor} />
+                    <PrivateRoute  path="/tabular/field/list/:id" component={TabularFieldList} />
+                    <PrivateRoute  path="/tabular/field/create/:id" component={TabularFieldEditor} />
+                    <PrivateRoute  path="/tabular/field/editor/:id" component={TabularFieldEditor} />
                     <Route path="/signIn" component={Sign} />
                     <Route index component={StartPage} />
                 </div>

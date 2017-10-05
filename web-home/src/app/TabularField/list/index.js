@@ -1,6 +1,6 @@
 import React from 'react'
 import './index.less'
-import { List, InputItem, Toast } from 'antd-mobile';
+import { List, InputItem, Toast,Modal } from 'antd-mobile';
 import { Link, Control } from 'react-keeper';
 import NavBarPage from '../../common/NavBarPage';
 import { Icon } from '../../common';
@@ -12,7 +12,7 @@ export default class TabularFieldList extends React.Component {
         super(props);
         this.state = {
             currentItem: null,
-            data: Control.state,
+            data: null,
             typeListShow: false
         }
 
@@ -23,7 +23,7 @@ export default class TabularFieldList extends React.Component {
     async loadData() {
         try {
             Toast.loading("获取信息中...");
-            let { id } = Control.state;
+            let { id } = this.props.params;
             let data = await TabularApi.info({ id });
             this.setState({
                 data
@@ -55,9 +55,6 @@ export default class TabularFieldList extends React.Component {
             Toast.fail(e.message);
         }
     }
-    async componentWillUpdate(nextProps, { data: { fields } }) {
-        console.log(fields)
-    }
     async shiftField(type) {
         const { currentItem, data } = this.state;
         let { fields, id } = data;
@@ -87,11 +84,16 @@ export default class TabularFieldList extends React.Component {
         }
     }
     render() {
-        const { currentItem, data: { title, explanation, fields = [] }, typeListShow, } = this.state;
+        const { currentItem, data, typeListShow, } = this.state;
+        const {id} = this.props.params;
+        const { title, explanation, fields = [] } = data || {};
         return (
-            <NavBarPage rightContent={<div>提交</div>}>
-                <div className="tabular-editor">
-                    <div className="tabular-mes">
+            <NavBarPage rightContent={<div>提交</div>} title="编辑表单">
+                {this.state.data && (
+                    <div className="tabular-editor">
+                    <div className="tabular-mes" onClick={()=>{
+                        Control.go(`/tabular/editor/${id}`,data)    
+                    }}>
                         <div className="title">{title}</div>
                         <div className="desc">{explanation}</div>
                     </div>
@@ -112,7 +114,9 @@ export default class TabularFieldList extends React.Component {
                                     </div>
                                     {currentItem == index && (
                                         <div className="tool-bar">
-                                            <div className="tool-item">
+                                            <div className="tool-item" onClick={()=>{
+                                                Control.go(`tabular/field/editor/${id}`,data[currentItem])
+                                                }}>
                                                 <Icon type="editor-circle-o" />
                                                 <span>编辑</span>
                                             </div>
@@ -143,7 +147,8 @@ export default class TabularFieldList extends React.Component {
                         <span>添加选项</span>
                     </div>
                 </div>
-                {typeListShow && <QuestTypeList onClose={() => this.setState({ typeListShow: false })} />}
+                )}
+                {typeListShow && <QuestTypeList id={id} onClose={() => this.setState({ typeListShow: false })} />}
             </NavBarPage>
         )
     }

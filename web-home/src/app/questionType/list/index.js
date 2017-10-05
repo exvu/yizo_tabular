@@ -28,16 +28,21 @@ let data = [
 export default class QuestTypeList extends React.Component {
 
     render() {
+        console.log(this.props);
         return (
             <div className="questions" onClick={this.props.onClose}>
                 <div className="type-box">
                     <div className="header">选择题目类型</div>
                     <div className="quest-type-list">
                         {data.map((item) => (
-                            <div className="type-item" key={item.id}>
+                            <Link
+                            to={`/tabular/field/create/${this.props.id}`}
+                            className="type-item" 
+                            key={item.id}
+                            >
                                 {item.icon}
                                 <div>{item.name}</div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                     <div className="close" onClick={() => {

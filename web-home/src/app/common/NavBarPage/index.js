@@ -4,7 +4,6 @@ import { NavBar, List, InputItem } from 'antd-mobile';
 import { Link,Control} from 'react-keeper';
 export default class TabularEditor extends React.Component {
 
-    title = "编辑表单";
     constructor(props) {
         super(props);
     }
@@ -17,7 +16,7 @@ export default class TabularEditor extends React.Component {
                     }}
                     {...this.props}
                     mode="dark"
-                >编辑表单</NavBar>
+                >{this.props.title}</NavBar>
                 <div className="content">
                     {this.props.children}
                 </div>

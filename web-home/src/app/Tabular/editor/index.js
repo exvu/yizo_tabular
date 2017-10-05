@@ -9,17 +9,32 @@ export default createForm()(
     class TabularEditor extends React.Component {
         constructor(props) {
             super(props);
-            let { type, ...data } = Control.state;
-            data['end_time'] = new Date(data['end_time'])
+            let { ...data = {} } = Control.state;
+            data['end_time'] = new Date(data['end_time'] || null)
             this.state = {
-                type, data
+                data
+            }
+        }
+        async componentWillMount() {
+            await this.loadData()
+        }
+        async loadData() {
+            try {
+                Toast.loading("获取信息中...");
+                let { id } = this.props.params;
+                let data = await TabularApi.info({ id });
+                this.setState({
+                    data
+                });
+                Toast.hide();
+            } catch (e) {
+                Toast.fail(e.message)
             }
         }
         async submit() {
             const { type, data } = this.state;
-            Toast.loading(type == 'create' ? "创建中" : "修改中")
+            Toast.loading('id' in this.props.params ? "修改中" : "创建中")
             this.props.form.validateFields(async (error, value) => {
-
                 if (error) {
                     for (let key in error) {
                         Toast.info(this.props.form.getFieldError(key)[0])
@@ -27,29 +42,23 @@ export default createForm()(
                     }
                 }
                 try {
-
-                    switch (type) {
-                        case "create": {
-                            Toast.loading("创建中...")
-                            let result = await TabularApi.add(this.props.form.getFieldsValue());
-                            if (!result) {
-                                throw new Error("创建失败")
-                            }
-                            Control.go("/tabular/field/editor", { id: result })
-                            break;
+                    if ('id' in this.props.params) {
+                        Toast.loading("修改中...")
+                        let result = await TabularApi.update({ id: data.id, ...this.props.form.getFieldsValue() });
+                        if (!result) {
+                            throw new Error("修改失败")
                         }
-                        case "editor": {
-                            Toast.loading("修改中...")
-                            let result = await TabularApi.update({ id: data.id, ...this.props.form.getFieldsValue() });
-                            if (!result) {
-                                throw new Error("修改失败")
-                            }
-                            Toast.success("修改成功");
-                            setTimeout(() => {
-                                Control.go(-1)
-                            }, 1000);
-                            break;
+                        Toast.success("修改成功");
+                        setTimeout(() => {
+                            Control.go(-1)
+                        }, 1000);
+                    } else {
+                        Toast.loading("创建中...")
+                        let result = await TabularApi.add(this.props.form.getFieldsValue());
+                        if (!result) {
+                            throw new Error("创建失败")
                         }
+                        Control.go("/tabular/field/editor", { id: result })
                     }
                 } catch (e) {
                     Toast.fail(e.message)
@@ -58,14 +67,14 @@ export default createForm()(
         }
         onOk = (date) => {
             console.log('onOk', date);
-          }
+        }
         render() {
             const { getFieldProps, getFieldError } = this.props.form;
-            const { type, data } = this.state;
+            const { data } = this.state;
             console.log(data)
             return (
-                <NavBarPage >
-                    <List renderHeader={() => type == 'create' ? '创建表单' : '修改表单'}>
+                <NavBarPage title={'id' in this.props.params ? '修改表单' : '创建表单'}>
+                    <List >
                         <InputItem
                             clear
                             placeholder="标题"
@@ -107,7 +116,7 @@ export default createForm()(
                                 style={{ width: '100%', color: '#108ee9', textAlign: 'center' }}
                                 onClick={this.submit.bind(this)}
                             >
-                                {type == 'create' ? "创建" : "修改"}
+                                {'id' in this.props.params ? "修改" : "创建"}
                             </div>
                         </List.Item>
                     </List>
