@@ -7,6 +7,29 @@ let { Interface, Route, Validate } = yizo;
  * 默认需要token
  */
 Interface.create('/user', UserController, [
+
+  //获取基本信息
+  Route("/:id", 'get', 'info', {
+    needToken: true
+  }),
+  //获取基本信息
+  Route("/:id/pwd", 'put', 'updatePwd', {
+    verify: {
+      password: {
+        mode: Validate.MUST_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      newPassword: {
+        mode: Validate.MUST_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
+    needToken: true
+  }),
   //user登录接口
   Route('/signIn', 'post', 'signin', {
     verify: {

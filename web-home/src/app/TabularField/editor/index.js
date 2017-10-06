@@ -14,7 +14,10 @@ export default createForm()(
             let { tid, fid } = this.props.params;
             this.state = {
                 tid,
-                fid
+                fid,
+                data:{
+                    required:true
+                }
             }
         }
         async componentWillMount() {
@@ -29,6 +32,7 @@ export default createForm()(
                 let { fields = [] } = await TabularApi.info({ id:tid });
                 for (let item of fields) {
                     if (item['id'] == fid) {
+                        item['required'] = item['required']=='0'?true:false;
                         this.setState({
                             data: item
                         });
@@ -54,7 +58,7 @@ export default createForm()(
                 }
                 Toast.loading('fid' in this.props.params ? "修改中..." : "添加中...")
                 let params =  this.props.form.getFieldsValue()
-                params['required'] = params['required'] ?'0':'1';
+                params['required'] = params['required']=='0'?true:false;
                 let result;
                 try{
                     if('fid' in this.props.params){
@@ -80,6 +84,7 @@ export default createForm()(
         render() {
 
             const { data={} } = this.state;
+            console.log(data);
             const { getFieldProps } = this.props.form;
             return (
                 <NavBarPage title={'fid' in this.props.params ? "编辑字段" : "添加字段"}>

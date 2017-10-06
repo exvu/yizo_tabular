@@ -15,7 +15,7 @@ module.exports = class TabularModel extends yizo.Model {
         if (count == 0) {
             return {
                 ...needPage ? { count: 0 } : {},
-                list: 0
+                list: []
             }
         }
         let data = await this.query(sqls.tabular.list + whereStr + limitStr);

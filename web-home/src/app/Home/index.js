@@ -63,7 +63,6 @@ export default class Home extends React.Component {
                         selectedIcon={<Icon type="tabular" />}
                         title="表单"
                         key="tabular"
-                        dot
                         selected={this.state.selectedTab === 'tabular'}
                         onPress={() => {
                             this.setState({

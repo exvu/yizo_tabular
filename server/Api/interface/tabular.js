@@ -65,7 +65,7 @@ Interface.create('/tabular', TabularController, [
         ]
       },
       endTime: {
-        mode: Validate.MUST_VALIDATE,
+        mode: Validate.EXISTS_VALIDATE,
         rule: [
           ['require', 'paramsNotNullErr']
         ]

@@ -39,6 +39,7 @@
     "antd": "^2.13.3",
     "antd-mobile": "^2.0.0-beta.3",
     "babel-plugin-import": "^1.5.0",
+    "base64url": "^2.0.0",
     "file-loader": "^0.11.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

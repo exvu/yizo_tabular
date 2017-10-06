@@ -33,7 +33,6 @@ class SignIn extends React.Component {
                 Toast.fail(e.message)
             }
         });
-
     }
     render() {
         const { getFieldProps, getFieldError } = this.props.form;

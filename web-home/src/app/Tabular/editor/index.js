@@ -25,6 +25,7 @@ export default createForm()(
                 Toast.loading("获取信息中...");
                 let { tid:id } = this.props.params;
                 let data = await TabularApi.info({ id });
+                data['required'] = data['required']==0?true:false;
                 this.setState({
                     data
                 });
@@ -43,10 +44,12 @@ export default createForm()(
                         return;
                     }
                 }
+                let params = this.props.form.getFieldsValue();
+                params['required'] = params['required']==0?true:false;
                 try {
                     if ('tid' in this.props.params) {
                         Toast.loading("修改中...")
-                        let result = await TabularApi.update({ id: data.id, ...this.props.form.getFieldsValue() });
+                        let result = await TabularApi.update({ id: data.id, ...params});
                         if (!result) {
                             throw new Error("修改失败")
                         }
@@ -56,11 +59,12 @@ export default createForm()(
                         }, 1000);
                     } else {
                         Toast.loading("创建中...")
-                        let result = await TabularApi.add(this.props.form.getFieldsValue());
+                        let result = await TabularApi.add(params);
                         if (!result) {
                             throw new Error("创建失败")
                         }
-                        Control.go("/tabular/field/editor", { id: result })
+                        Toast.success("创建成功");
+                        Control.go(`/tabular/${result}/field/list`,)
                     }
                 } catch (e) {
                     Toast.fail(e.message)
