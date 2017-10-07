@@ -56,3 +56,7 @@ select count(*) as count from tabular_field
 ##删除字段
 #deleteField
 delete from tabular_field
+
+##添加表单字段值
+#addFieldItem
+insert into tabular_item(user_id,tabular_id,field_id,value,add_ip) values

@@ -39,27 +39,27 @@ module.exports = class TabularModel extends yizo.Model {
         return tabular;
     }
     async add({ title, explanation, endTime, user_id }) {
-
-        let { insertId = false } = await this.query(sqls.tabular.add, { title, explanation, end_time: endTime, creater: user_id })
-        return insertId;
+        let id = encrypt.md5(new Date() + Math.random() * 1000);
+        let { affectedRows = 0 } = await this.query(sqls.tabular.add, { id, title, explanation, end_time: endTime, creater: user_id })
+        return affectedRows > 0 ? id : false;
     }
     /**
      * 修改表单
      */
     async update({ id, title, explanation, status }) {
 
-        let { affectedRows = 0 } = await this.query(sqls.tabular.update + ` where id =${id} `, { title, explanation, status });
+        let { affectedRows = 0 } = await this.query(sqls.tabular.update + ` where id =${this.escape(id)} `, { title, explanation, status });
         return affectedRows;
     }
     /**
      * 删除表单
      */
     async delete(ids) {
-        
+
         await this.startTrans();
-        let { affectedRows:affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField+' where tabular_id in (?)',ids);
-        let { affectedRows:affectedRows2 = 0 } = await this.query(sqls.tabular.del, ids);
-        if(affectedRows1>=0 && affectedRows2>0){
+        let { affectedRows: affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField + ' where tabular_id in (?)', ids);
+        let { affectedRows: affectedRows2 = 0 } = await this.query(sqls.tabular.del, ids);
+        if (affectedRows1 >= 0 && affectedRows2 > 0) {
             await this.commit();
             return true;
         }
@@ -73,16 +73,17 @@ module.exports = class TabularModel extends yizo.Model {
 
 
         //获取条数
-        let [{ count = 0 } = {}] = await this.query(sqls.tabular.fieldCount + ` WHERE tabular_id=${tabular_id}`);
-        console.log(count)
-        let { insertId = false } = await this.query(sqls.tabular.addField, {
+        let [{ count = 0 } = {}] = await this.query(sqls.tabular.fieldCount + ` WHERE tabular_id=${this.escape(tabular_id)}`);
+        let id = encrypt.md5(new Date() + Math.random() * 1000);
+        let { affectedRows = 0 } = await this.query(sqls.tabular.addField, {
+            id,
             tabular_id,
             field_name,
             field_type,
             sort_id: count + 1,
             explanation, required, default_value, options
         })
-        return insertId;
+        return affectedRows > 0 ? id : false;
     }
     /**
      * 修改字段
@@ -90,7 +91,7 @@ module.exports = class TabularModel extends yizo.Model {
     async updateField({ tid, fid, field_name, field_type, explanation, required, default_value, options }) {
 
 
-        let { affectedRows } = await this.query(sqls.tabular.updateField + ` WHERE id=${fid}`, {
+        let { affectedRows } = await this.query(sqls.tabular.updateField + ` WHERE id=${this.escape(fid)}`, {
             tabular_id: tid,
             field_name,
             field_type,
@@ -146,20 +147,20 @@ module.exports = class TabularModel extends yizo.Model {
     /**
      * 删除字段
      */
-    async deleteField(tid,ids) {
+    async deleteField(tid, ids) {
         try {
             //开启事务
             await this.startTrans();
             //删除字段
-            let { affectedRows:affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField+' where id in (?)', ids);
+            let { affectedRows: affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField + ' where id in (?)', ids);
             //排序字段
             //获取前后记录数据
             let [{ sorts } = {}] = await this.query(
                 `select group_concat(id  ORDER BY sort_id) as sorts from tabular_field where tabular_id=${this.escape(tid)}`
             );
             sorts = sorts.toString("utf-8").split(',');
-            console.log(affectedRows1,sorts)
-            if (affectedRows1==0 || (sorts && sorts.length == 0)) {
+            console.log(affectedRows1, sorts)
+            if (affectedRows1 == 0 || (sorts && sorts.length == 0)) {
                 await this.commit();
                 return true;
             }
@@ -168,10 +169,10 @@ module.exports = class TabularModel extends yizo.Model {
             for (let i = 0; i < sorts.length; i++) {
                 whenthenStr += ` when id = ${sorts[i]} then ${i + 1} `;
             }
-            let { affectedRows:affectedRows2= 0 } = await this.query(
-                `UPDATE tabular_field SET sort_id = CASE ` + whenthenStr + `END WHERE id in(?) and tabular_id = ?;`, sorts,tid
+            let { affectedRows: affectedRows2 = 0 } = await this.query(
+                `UPDATE tabular_field SET sort_id = CASE ` + whenthenStr + `END WHERE id in(?) and tabular_id = ?;`, sorts, tid
             )
-            if(affectedRows1>0 && affectedRows2>0){
+            if (affectedRows1 > 0 && affectedRows2 > 0) {
                 await this.commit();
                 return true;
             }
@@ -181,6 +182,41 @@ module.exports = class TabularModel extends yizo.Model {
             console.log(e);
             await this.rollback();
             return false;
+        }
+    }
+    /**
+     * 答题
+     */
+    async answer(id, ip, data) {
+
+        let fields = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
+        let str = [];
+        for (let i = 0; i < fields.length; i++) {
+            if (!(fields[i]['id'] in data)) {
+                throw new BaseError(PARAMS_ERR)
+            }
+            str.push(`(${this.escape(encrypt.md5(new Date())) + ',' + this.escape(id) + ',' + this.escape(fields[i]['id']) + ',' + this.escape(data[fields[i]['id']]) + ',' + this.escape(ip)})`);
+        }
+        let { affectedRows } = await this.query(sqls.tabular.addFieldItem + str.join(','));
+
+        return affectedRows > 0;
+    }
+
+    async data(id) {
+
+        let fields = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
+        let strArr = [];
+        for (let i = 0; i < fields.length; i++) {
+            strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS ${fields[i]['id']}`)
+        }
+        let data = await this.query(`SELECT
+                user_id,
+                ${strArr.join(',')},
+                add_ip
+            FROM tabular_item
+            where tabular_id=${this.escape(id)} GROUP BY user_id  order by id`);
+        return {
+            fields, data
         }
     }
 }

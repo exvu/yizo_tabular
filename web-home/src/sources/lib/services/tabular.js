@@ -11,4 +11,6 @@ export default {
     deleteField:Api.delete("/tabular/:id/field"),
     addField:Api.post('/tabular/:id/field'),
     updateField:Api.put('/tabular/:tid/field/:fid'),
+    item:Api.post("/tabular/:tid/item"),
+    data:Api.get("/tabular/:tid/data")
 }

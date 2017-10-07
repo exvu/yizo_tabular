@@ -150,8 +150,11 @@ export default class TabularList extends React.Component {
                                         alert('确定操作吗？', item['status'] == 0 ? '确认发布此表单吗' : '暂停后答题者不能提交数据，确认操作吗??', [
                                             { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
                                             {
-                                                text: 'OK', onPress: () => {
-                                                    this.update({ status: item['status'] == 0 ? 1 : 0, id: item.id })
+                                                text: 'OK', onPress:async () => {
+                                                    await this.update({ status: item['status'] == 0 ? 1 : 0, id: item.id })
+                                                    if(item['status']==0){
+                                                        await this.share(item.id)
+                                                    }
                                                 }
                                             },
                                         ]);
@@ -163,12 +166,12 @@ export default class TabularList extends React.Component {
                                         <Icon type="editor-circle-o" />
                                         <p>编辑</p>
                                     </Link>
-                                    <a className="tool-item">
+                                    <Link className="tool-item" to={`/tabular/${item.id}/data`}>
                                         <Icon type="data-circle-o" />
                                         <p>数据</p>
-                                    </a>
+                                    </Link>
                                     <a className="tool-item" onClick={async () => {
-                                        if (status == 0) {
+                                        if (item.status == 0) {
                                             alert('确定操作吗？', '确认发布此表单吗', [
                                                 { text: 'Cancel', onPress: () => console.log('cancel'), style: 'default' },
                                                 {

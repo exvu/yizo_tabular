@@ -113,6 +113,20 @@ Interface.create('/tabular', TabularController, [
     },
     needToken: true
   }),
+  Route("/:id/item",'post','answer',{
+    verify: {
+      data: {
+        mode: Validate.MUST_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
+    needToken:true
+  }),
+  Route("/:id/data",'get','data',{
+    needToken:true
+  }),
   /**
    * 添加字段
    */
@@ -142,12 +156,7 @@ Interface.create('/tabular', TabularController, [
           ['require', 'paramsNotNullErr']
         ]
       },
-      default_value: {
-        mode: Validate.EXISTS_VALIDATE,
-        rule: [
-          ['require', 'paramsNotNullErr']
-        ]
-      },
+
       options: {
         mode: Validate.EXISTS_VALIDATE,
         rule: [
@@ -156,6 +165,26 @@ Interface.create('/tabular', TabularController, [
       }
     },
     needToken: true
+  }),
+   /**
+   * 字段排序
+   */
+  Route('/:id/field/sort','put','sortField',{
+    verify:{
+      field_id:{
+        mode: Validate.MUST_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      type:{
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
+    needToken:false
   }),
   /**
    * 修改字段
@@ -186,12 +215,6 @@ Interface.create('/tabular', TabularController, [
           ['require', 'paramsNotNullErr']
         ]
       },
-      default_value: {
-        mode: Validate.EXISTS_VALIDATE,
-        rule: [
-          ['require', 'paramsNotNullErr']
-        ]
-      },
       options: {
         mode: Validate.EXISTS_VALIDATE,
         rule: [
@@ -201,26 +224,7 @@ Interface.create('/tabular', TabularController, [
     },
     needToken: true
   }),
-  /**
-   * 字段排序
-   */
-  Route('/:id/field/sort','put','sortField',{
-    verify:{
-      field_id:{
-        mode: Validate.MUST_VALIDATE,
-        rule: [
-          ['require', 'paramsNotNullErr']
-        ]
-      },
-      type:{
-        mode: Validate.EXISTS_VALIDATE,
-        rule: [
-          ['require', 'paramsNotNullErr']
-        ]
-      }
-    },
-    needToken:false
-  }),
+ 
   /**
    * 删除字段
    */

@@ -120,12 +120,12 @@ module.exports = class Server {
 
         if (serverConfig['protocol'] == "http") {
             //监听端口
-            http.createServer(this.app).listen(serverConfig.port, () =>  {
+            http.createServer(this.app).listen(serverConfig.port,'0.0.0.0', () =>  {
                 console.log(`HTTP Server正在监听${serverConfig.port}端口...`.green)
             })
         }else{
              //监听端口
-             https.createServer(serverConfig['credentials'],this.app).listen(serverConfig.port, () =>  {
+             https.createServer(serverConfig['credentials'],this.app).listen(serverConfig.port,'0.0.0.0', () =>  {
                 console.log(`HTTPS server 正在监听${serverConfig.port}端口...`.green)
             })
         }

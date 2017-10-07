@@ -5,6 +5,8 @@ class Controller {
     json(data: any): void;
     status(code: Number): void;
     header(key: String, value: any): void;
+    request:Request;
+    response:Response;
     reqUser:{
         id:any,
         type:any
