@@ -1,21 +1,26 @@
 .table{
-    display: block;
     width: 100%;
+    display: table;
     overflow: scroll;
+    border-collapse: collapse;
+    border-spacing: 0;
+    thead,tbody{
+        width: 100%;
+    }
     tr{
         td,th{
             white-space: nowrap;
             background-color: #fff;
             border-left: 1px solid #F3F3F3;
             border-bottom: 1px solid #F3F3F3;
-            border-top: medium none;
             margin: 0;
+            text-align: center;
             line-height: 45px;
             padding: 2px 10px;
         }
         th{
             line-height: 30px;
-            padding: 2px 10px;
+            padding: 2px 5px;
         }
     }
 }

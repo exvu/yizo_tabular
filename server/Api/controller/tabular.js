@@ -1,5 +1,6 @@
 let { BaseError, Code } = yizo;
 let TabularModel = require("../model/tabular")
+let Excel = require('../comment/excel');
 module.exports = class TabularController extends yizo.Controller {
 
     /**
@@ -93,20 +94,56 @@ module.exports = class TabularController extends yizo.Controller {
     /**
      * 答题
      */
-    async answer({id,data}){
+    async answer({ id, data }) {
 
         let ip = this.request.headers['x-forwarded-for'] ||
-        this.request.connection.remoteAddress ||
-        this.request.socket.remoteAddress ||
-        this.request.connection.socket.remoteAddress;
+            this.request.connection.remoteAddress ||
+            this.request.socket.remoteAddress ||
+            this.request.connection.socket.remoteAddress;
         let model = new TabularModel();
-        let result = await model.answer(id, ip,data);
+        let result = await model.answer(id, ip, data);
         return this.json(result)
     }
-    async data({id}){
+    async data({ id }) {
 
         let model = new TabularModel();
         let data = await model.data(id);
         return this.json(data)
+    }
+    async excel({ id }) {
+
+        let model = new TabularModel();
+        let { fields, data } = await model.data(id);
+
+        let cols = [{
+            caption:'序号',
+            type: 'string'
+        }], rows = [];
+        let colsId = [];
+        let explanations = ['字段说明'];
+        for (let item of fields) {
+            cols.push({
+                caption: item['field_name'],
+                type: 'string'
+            })
+            explanations.push(item['explanations']||'无')
+            colsId.push(item['id']+'');
+        }
+        rows.push(explanations)
+        for (let i=0;i<data.length;i++) {
+            let row = [i+1+''];
+            for (let item of colsId) {
+                row.push(data[i][item]);
+            }
+            rows.push(row)
+        }
+        console.log(rows)
+        let file = Excel.scanned({
+            cols,
+            rows,
+        })
+        this.response.setHeader('Content-Type', 'application/vnd.openxmlformats');
+        this.response.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+        this.response.end(file, 'binary');
     }
 }

@@ -127,6 +127,9 @@ Interface.create('/tabular', TabularController, [
   Route("/:id/data",'get','data',{
     needToken:true
   }),
+  Route("/:id/excel",'get','excel',{
+    needToken:false
+  }),
   /**
    * 添加字段
    */

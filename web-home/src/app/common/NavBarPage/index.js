@@ -14,6 +14,7 @@ export default class TabularEditor extends React.Component {
                     onLeftClick={() => {
                         Control.go(-1);
                     }}
+                    
                     {...this.props}
                     mode="dark"
                 >{this.props.title}</NavBar>

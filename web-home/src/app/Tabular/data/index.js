@@ -1,9 +1,10 @@
 import React from 'react'
 import './index.less'
-import {Button} from 'antd-mobile';
-import TabularApi from '../../../sources/lib/services/tabular'
-import NavBarPage from '../../common/NavBarPage';
+import { Button } from 'antd-mobile';
+import TabularApi from '../../../sources/lib/services/tabular';
 
+import NavBarPage from '../../common/NavBarPage';
+import api from '../../../sources/config/api'
 import { Toast } from 'antd-mobile';
 
 export default class TabularData extends React.Component {
@@ -21,8 +22,8 @@ export default class TabularData extends React.Component {
             let { tid } = this.props.params;
             Toast.loading("获取数据中...");
             let { fields, data } = await TabularApi.data({ tid });
-            let showFields ={};
-            for(let i=0;i<fields.length;i++){
+            let showFields = {};
+            for (let i = 0; i < fields.length; i++) {
                 showFields[fields[i]['id']] = fields[i]['field_name'];
             }
             this.setState({
@@ -42,11 +43,14 @@ export default class TabularData extends React.Component {
     }
     render() {
 
-        const { fields, data,showFields={}} = this.state;
+        const { fields, data, showFields = {} } = this.state;
+        let { tid } = this.props.params;
 
         console.log(showFields)
         return (
-            <NavBarPage title="数据">
+            <NavBarPage title="数据"
+                rightContent={[<a href={api.host+`/tabular/${tid}/excel`}>数据下载</a>]}
+            >
                 <div className="top">
                     <button >显示字段</button>
                 </div>

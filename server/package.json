@@ -17,6 +17,7 @@
     "cors": "^2.8.4",
     "crypto": "^1.0.1",
     "debug": "^2.6.8",
+    "excel-export": "^0.5.1",
     "express": "^4.15.4",
     "imageinfo": "^1.0.4",
     "images": "^2.2.1",
