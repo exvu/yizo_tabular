@@ -27,7 +27,18 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                 },
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                query:{
+                    plugins: [
+                        ["react-transform", {
+                          transforms: [{
+                            transform: "react-transform-hmr",
+                            imports: ["react"],
+                            locals: ["module"]
+                          }]
+                        }]
+                      ]
+                }
             },
             {
                 test: /.(png|gif|jpe?g)$/,
