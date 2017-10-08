@@ -1,13 +1,14 @@
 let { BaseError, Code } = yizo;
 let TabularModel = require("../model/tabular")
 let Excel = require('../comment/excel');
+let urlencode = require('urlencode');
 module.exports = class TabularController extends yizo.Controller {
 
     /**
      * 获取所有表单
      * @param {*} param0 
      */
-    async list({ page = 1, pageSize = 5, needPage = false, creater }) {
+    async list({ page = 1, pageSize = 5, needPage = false, creater }) {var urlencode = require('urlencode');
         let model = new TabularModel();
 
         let data = { page: page - 1, pageSize, needPage };
@@ -142,7 +143,7 @@ module.exports = class TabularController extends yizo.Controller {
             rows,
         })
         this.response.setHeader('Content-Type', 'application/vnd.openxmlformats');
-        this.response.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+        this.response.setHeader("Content-Disposition", "attachment; filename=" +( info.title?urlencode(info.title):"data")+".xlsx");
         this.response.end(file, 'binary');
     }
 }

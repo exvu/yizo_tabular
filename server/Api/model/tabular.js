@@ -247,11 +247,11 @@ module.exports = class TabularModel extends yizo.Model {
         let fields = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
         let strArr = [];
         for (let i = 0; i < fields.length; i++) {
-            strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS \`${fields[i]['id']}\``)
+            strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS \`${fields[i]['id']}\`,`)
         }
         let list = await this.query(`SELECT
                 user_id,
-                ${strArr.join(',')},
+                ${strArr.join('')}
                 add_ip
             FROM tabular_item
             where tabular_id=${this.escape(id)} GROUP BY user_id  order by id `);
