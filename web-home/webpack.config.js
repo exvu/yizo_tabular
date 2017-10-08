@@ -20,6 +20,7 @@ module.exports = {
         publicPath: "/",
         hot: true
     },
+    
     module: {
         rules: [
             {
@@ -27,18 +28,7 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                 },
-                exclude: /node_modules/,
-                query:{
-                    plugins: [
-                        ["react-transform", {
-                          transforms: [{
-                            transform: "react-transform-hmr",
-                            imports: ["react"],
-                            locals: ["module"]
-                          }]
-                        }]
-                      ]
-                }
+                exclude: /node_modules/
             },
             {
                 test: /.(png|gif|jpe?g)$/,

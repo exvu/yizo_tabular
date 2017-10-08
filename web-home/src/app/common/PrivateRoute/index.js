@@ -1,8 +1,18 @@
 import React from 'react';
 import cache from '../../../sources/lib/cache';
-import signIn from '../../Sign/SignIn';
-import { Route,Control } from 'react-keeper'
+import { Route, Control } from 'react-keeper'
+const loginFilter = (callback, props) => {
+
+    new Promise((resolve, reject) => {
+        if (!cache.local.getItem("access-token")) {
+            Control.go('/signIn')
+            reject();
+        } else {
+            resolve();
+        }
+    }).then(callback);
+}
 const PrivateRoute = ({ component: Component, ...rest }) => {
-    return <Route {...rest} component={!cache.local.getItem("access-token")?signIn:Component}/>
+    return <Route {...rest} component={Component} enterFilter={loginFilter} />
 }
 export default PrivateRoute;

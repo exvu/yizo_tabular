@@ -1,7 +1,8 @@
 import React from 'react'
 import './index.less'
-import { history } from '../router';
 import { Button } from '../common';
+import cache from '../../sources/lib/cache';
+import { Route, Control } from 'react-keeper'
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 const navs = [
@@ -18,6 +19,9 @@ export default class Sign extends React.Component {
 
     constructor(props) {
         super(props);
+        if (cache.local.getItem("access-token")) {
+            Control.go('/home')
+        }
         this.state = {
             currentNav: 'signIn'
         }
@@ -54,11 +58,11 @@ export default class Sign extends React.Component {
                         </div>
                     </div>
                     <div className="main">
-                        {currentNav=="signIn"?(
-                            <SignIn/>
-                        ):(
-                            <SignUp/>
-                        )}
+                        {currentNav == "signIn" ? (
+                            <SignIn />
+                        ) : (
+                                <SignUp />
+                            )}
                     </div>
                 </div>
             </div>

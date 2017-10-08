@@ -1,5 +1,6 @@
 import React from 'react'
 import './index.less'
+import '../Sign/index.less'
 import { TabBar, NavBar } from 'antd-mobile';
 import { Link } from 'react-keeper';
 import TabularList from '../Tabular/list';
