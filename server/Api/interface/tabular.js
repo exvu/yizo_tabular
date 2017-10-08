@@ -121,7 +121,7 @@ Interface.create('/tabular', TabularController, [
         ]
       }
     },
-    needToken:true
+    needToken:false
   }),
   Route("/:id/data",'get','data',{
     verify: {
