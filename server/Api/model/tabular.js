@@ -240,11 +240,11 @@ module.exports = class TabularModel extends yizo.Model {
 
     async excel(id) {
 
-        let [tabular = null] = await this.query(sqls.tabular.list + ` WHERE tabular.id=${this.escape(id)} `);
-        if (!tabular) {
+        let [info = null] = await this.query(sqls.tabular.list + ` WHERE tabular.id=${this.escape(id)} `);
+        if (!info) {
             throw new BaseError(Code.NOT_FOUND_ERR);
         }
-        tabular['fields'] = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
+        let fields = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
         let strArr = [];
         for (let i = 0; i < fields.length; i++) {
             strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS \`${fields[i]['id']}\``)
@@ -256,7 +256,7 @@ module.exports = class TabularModel extends yizo.Model {
             FROM tabular_item
             where tabular_id=${this.escape(id)} GROUP BY user_id  order by id `);
         return {
-            tabular, list
+            info,fields, list
         }
     }
 }

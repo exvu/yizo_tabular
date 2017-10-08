@@ -113,7 +113,7 @@ module.exports = class TabularController extends yizo.Controller {
     async excel({ id }) {
 
         let model = new TabularModel();
-        let { tabular:{fields}, list } = await model.excel(id);
+        let {fields,info, list } = await model.excel(id);
         let cols = [{
             caption:'序号',
             type: 'string'
