@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 body{
-    background: #F0F2F5;
+    background: #f7fafc;
     height: 100%;
 }
 #yizo{
@@ -18,4 +18,35 @@ body{
 a,a:hover,a:link,a:active{
     text-decoration: none;
     color: #000;
+}
+.nav-bar{
+    display: flex;
+    flex-direction: row;
+    background-color: #108ee9;
+    color: #fff;
+    height:45px;
+    align-items: center;
+    font-size:20px;
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    .left,.title,.right{
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .left{
+        padding-left: 15px;
+    }
+    .title{
+        justify-content: center;
+    }
+    .right{
+        justify-content: flex-end;
+        padding-right: 15px;
+    }
 }

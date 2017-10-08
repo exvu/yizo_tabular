@@ -45,7 +45,7 @@ Interface.create('/tabular', TabularController, [
   Route("/:id",'get',"info",{
     verify:{
     },
-    needToken:true
+    needToken: false
   }),
   /**
    * 添加
@@ -59,9 +59,9 @@ Interface.create('/tabular', TabularController, [
         ]
       },
       explanation: {
-        mode: Validate.MUST_VALIDATE,
+        mode: Validate.EXISTS_VALIDATE,
         rule: [
-          ['require', 'paramsNotNullErr']
+
         ]
       },
       endTime: {
@@ -87,7 +87,6 @@ Interface.create('/tabular', TabularController, [
       explanation: {
         mode: Validate.EXISTS_VALIDATE,
         rule: [
-          ['require', 'paramsNotNullErr']
         ]
       },
       status: {
@@ -125,6 +124,26 @@ Interface.create('/tabular', TabularController, [
     needToken:true
   }),
   Route("/:id/data",'get','data',{
+    verify: {
+      page: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      pageSize: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      },
+      needPage: {
+        mode: Validate.EXISTS_VALIDATE,
+        rule: [
+          ['require', 'paramsNotNullErr']
+        ]
+      }
+    },
     needToken:true
   }),
   Route("/:id/excel",'get','excel',{

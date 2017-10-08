@@ -8,8 +8,8 @@ let { BaseError, Code, encrypt } = yizo;
 module.exports = class TabularModel extends yizo.Model {
 
     async list({ page, pageSize, creater, needPage }) {
-        let whereStr = ` WHERE creater= ${this.escape(creater)} `;
-        let limitStr = ` LIMIT ${page},${(page + 1) * pageSize} `;
+        let whereStr = ` WHERE creater= ${this.escape(creater)}`;
+        let limitStr = ` LIMIT ${page},${pageSize} `;
 
         let [{ count = 0 } = {}] = await this.query(sqls.tabular.count + whereStr);
         if (count == 0) {
@@ -18,9 +18,9 @@ module.exports = class TabularModel extends yizo.Model {
                 list: []
             }
         }
-        let data = await this.query(sqls.tabular.list + whereStr + limitStr);
+        let data = await this.query(sqls.tabular.list + whereStr + ' GROUP BY tabular.id ' + limitStr);
         return {
-            ...needPage ? { count: 0 } : {},
+            ...needPage ? { count } : {},
             list: data
         };
     }
@@ -31,7 +31,7 @@ module.exports = class TabularModel extends yizo.Model {
     async info(id) {
 
         //获取信息
-        let [tabular = null] = await this.query(sqls.tabular.list + ` WHERE id=${this.escape(id)} `);
+        let [tabular = null] = await this.query(sqls.tabular.list + ` WHERE tabular.id=${this.escape(id)} `);
         if (!tabular) {
             throw new BaseError(Code.NOT_FOUND_ERR);
         }
@@ -57,9 +57,10 @@ module.exports = class TabularModel extends yizo.Model {
     async delete(ids) {
 
         await this.startTrans();
-        let { affectedRows: affectedRows1 = 0 } = await this.query(sqls.tabular.deleteField + ' where tabular_id in (?)', ids);
-        let { affectedRows: affectedRows2 = 0 } = await this.query(sqls.tabular.del, ids);
-        if (affectedRows1 >= 0 && affectedRows2 > 0) {
+        let { affectedRows: affectedRows1 = 0 } = await this.query(sqls.tabular.deleteData + ' where tabular_id in (?)', ids);
+        let { affectedRows: affectedRows2 = 0 } = await this.query(sqls.tabular.deleteField + ' where tabular_id in (?)', ids);
+        let { affectedRows: affectedRows3 = 0 } = await this.query(sqls.tabular.del, ids);
+        if (affectedRows1 >= 0 && affectedRows2 >= 0 && affectedRows3 > 0) {
             await this.commit();
             return true;
         }
@@ -202,21 +203,60 @@ module.exports = class TabularModel extends yizo.Model {
         return affectedRows > 0;
     }
 
-    async data(id) {
+    async data(id, { page, pageSize, needPage }) {
+
+
 
         let fields = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
+        let [{ count = 0 }] = await this.query(`SELECT
+                    count(DISTINCT user_id) AS count
+                FROM tabular
+                    left JOIN tabular_item ON tabular.id = tabular_item.tabular_id
+                WHERE tabular_id = ${this.escape(id)}`);
+        if (count == 0) {
+            return {
+                ...needPage ? { count: 0 } : {},
+                fields,
+                list: []
+            }
+        }
+
+        let limitStr = ` LIMIT ${page},${pageSize} `;
         let strArr = [];
         for (let i = 0; i < fields.length; i++) {
-            strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS ${fields[i]['id']}`)
+            strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS \`${fields[i]['id']}\``)
         }
-        let data = await this.query(`SELECT
+        let list = await this.query(`SELECT
+                    user_id,
+                    ${strArr.join(',')},
+                    add_ip
+                FROM tabular_item
+                where tabular_id=${this.escape(id)} GROUP BY user_id  order by id ` + limitStr);
+        return {
+            ...needPage ? { count } : {},
+            fields, list
+        }
+    }
+
+    async excel(id) {
+
+        let [tabular = null] = await this.query(sqls.tabular.list + ` WHERE tabular.id=${this.escape(id)} `);
+        if (!tabular) {
+            throw new BaseError(Code.NOT_FOUND_ERR);
+        }
+        tabular['fields'] = await this.query(sqls.tabular.fieldsList + ` WHERE tabular_id = ${this.escape(id)} ORDER BY sort_id`);
+        let strArr = [];
+        for (let i = 0; i < fields.length; i++) {
+            strArr.push(`MAX(IF(field_id = '${fields[i]['id']}', value, null)) AS \`${fields[i]['id']}\``)
+        }
+        let list = await this.query(`SELECT
                 user_id,
                 ${strArr.join(',')},
                 add_ip
             FROM tabular_item
-            where tabular_id=${this.escape(id)} GROUP BY user_id  order by id`);
+            where tabular_id=${this.escape(id)} GROUP BY user_id  order by id `);
         return {
-            fields, data
+            tabular, list
         }
     }
 }

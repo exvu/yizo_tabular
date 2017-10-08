@@ -95,15 +95,11 @@ export default createForm()(
                         >标题</InputItem>
                         <InputItem
                             clear
-                            placeholder="欢迎词"
+                            placeholder="备注"
                             {...getFieldProps('explanation', {
-                                initialValue: data.explanation || "",
-                                rules: [{
-                                    required: true,
-                                    message: "欢迎词不能为空"
-                                }]
+                                initialValue: data.explanation || ""
                             }) }
-                        >欢迎词</InputItem>
+                        >备注</InputItem>
                         {/* <DatePicker mode="datetime"
                         onOk={()=>{
 

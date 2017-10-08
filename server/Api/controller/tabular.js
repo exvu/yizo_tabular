@@ -104,17 +104,16 @@ module.exports = class TabularController extends yizo.Controller {
         let result = await model.answer(id, ip, data);
         return this.json(result)
     }
-    async data({ id }) {
+    async data({ page = 1, pageSize = 5, needPage = false, id}) {
 
         let model = new TabularModel();
-        let data = await model.data(id);
+        let data = await model.data(id,{page:page-1,pageSize,needPage});
         return this.json(data)
     }
     async excel({ id }) {
 
         let model = new TabularModel();
-        let { fields, data } = await model.data(id);
-
+        let { tabular:{fields}, list } = await model.excel(id);
         let cols = [{
             caption:'序号',
             type: 'string'
@@ -130,10 +129,10 @@ module.exports = class TabularController extends yizo.Controller {
             colsId.push(item['id']+'');
         }
         rows.push(explanations)
-        for (let i=0;i<data.length;i++) {
+        for (let i=0;i<list.length;i++) {
             let row = [i+1+''];
             for (let item of colsId) {
-                row.push(data[i][item]);
+                row.push(list[i][item]);
             }
             rows.push(row)
         }

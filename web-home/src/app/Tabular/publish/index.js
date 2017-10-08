@@ -3,14 +3,25 @@ import './index.less'
 import { ListView, InputItem, Toast, Modal, Button } from 'antd-mobile';
 import TabularApi from '../../../sources/lib/services/tabular'
 import { createForm } from 'rc-form';
-import {  Control } from 'react-keeper';
-
+import { Control } from 'react-keeper';
+import qr from 'qr-image';
+import { TextDecoder } from 'text-encoding';
 export default createForm()(
     class TabularPublish extends React.Component {
 
         constructor(props) {
             super(props);
+            let code;
+            let { share = false } = Control.state || {};
+            if (share) {
+                let u8 = qr.imageSync(window.location.href, {
+                    margin: 1
+                });
+                code = "data:image/png;base64," + btoa(String.fromCharCode.apply(null, u8));
+            }
             this.state = {
+                maskShow: share,
+                code
             }
         }
         async componentWillMount() {
@@ -43,17 +54,17 @@ export default createForm()(
                 }
                 try {
                     Toast.loading("提交中...");
-                    
+
                     let params = this.props.form.getFieldsValue();
-                    let {id} = this.state.data;
-                    let result = await TabularApi.item({ tid:id,data: params })
+                    let { id } = this.state.data;
+                    let result = await TabularApi.item({ tid: id, data: params })
                     if (!result) {
                         throw new Error("提交失败")
                     }
                     Toast.hide();
-                    Control.go('/result/success',{
-                        title:'提交成功',
-                        mes:"表单已成功提交,谢谢您的参与"
+                    Control.go('/result/success', {
+                        title: '提交成功',
+                        mes: "表单已成功提交,谢谢您的参与"
                     })
                 } catch (e) {
                     Toast.fail(e.message)
@@ -61,25 +72,22 @@ export default createForm()(
             });
         }
         render() {
-            const { data } = this.state;
+            const { data, maskShow, code } = this.state;
+            console.log(code)
             const { getFieldProps, getFieldError } = this.props.form;
             return data ? (
                 <div className="publish" >
-                    <header className="header">
-                        <div className="left"></div>
+                    <header className="nav-bar  ">
                         <div className="title">{data.title}</div>
-                        <div className="right" onClick={() => {
-                        }}>
-                        </div>
                     </header>
                     <div className="content">
                         <div className="explanation">
                             {data.explanation}
                         </div>
                         <div className="items">
-                            {data.fields.map((item) => {
+                            {data.fields.map((item, index) => {
                                 return (
-                                    <div className="item">
+                                    <div className="item" key={index}>
                                         <div className="field-name">
                                             {item.field_name}
                                         </div>
@@ -87,7 +95,7 @@ export default createForm()(
                                             <input {...getFieldProps(item.id, {
                                                 initialValue: item.default_value || "",
                                                 rules: [{
-                                                    required: item.required=='0',
+                                                    required: item.required == '0',
                                                     message: item.field_name + "不能为空"
                                                 }]
                                             }) } />
@@ -98,6 +106,19 @@ export default createForm()(
                         </div>
                         <Button className="submit" type="primary" onClick={this.onSubmit.bind(this)}>提交</Button>
                     </div>
+                    {maskShow && <div className="mask">
+                        <div className="web-mask" onClick={() => {
+                            this.setState({
+                                maskShow: false
+                            })
+                        }}></div>
+                        <div className="save-code">
+                            <img src={code} />
+
+                            <p>长按保存答题二维码</p>
+                        </div>
+                    </div>
+                    }
                 </div>
             ) : (null)
         }

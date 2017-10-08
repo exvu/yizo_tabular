@@ -94,7 +94,7 @@ export default createForm()(
                                 initialValue:data['field_name']||''
                             }) }
                             clear
-                            placeholder="字段名(必填)"
+                            placeholder="字段名(必填) （如：姓名，性别等）"
                         >字段名</InputItem>
                         <TextareaItem
                             {...getFieldProps('explanation',{

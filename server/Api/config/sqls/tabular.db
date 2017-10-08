@@ -10,7 +10,17 @@ select count(*) as count from tabular
 
 ##获取表单列表
 #list
-SELECT * FROM tabular
+SELECT
+  tabular.id,
+  title,
+  explanation,
+  start_time,
+  end_time,
+  status,
+  creater,
+  count(DISTINCT user_id) AS total
+FROM tabular
+  left JOIN tabular_item ON tabular.id = tabular_item.tabular_id
 
 ##修改表单信息
 #update
@@ -60,3 +70,9 @@ delete from tabular_field
 ##添加表单字段值
 #addFieldItem
 insert into tabular_item(user_id,tabular_id,field_id,value,add_ip) values
+
+
+##删除数据
+#deleteData
+delete from tabular_item
+

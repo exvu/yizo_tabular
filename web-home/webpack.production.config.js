@@ -12,8 +12,10 @@ const svgDirs = [
     path.resolve(__dirname, './src/sources/svg'),  // 私人的 svg 存放目录
 ];
 module.exports = {
-
-    entry:path.resolve(__dirname, 'src'),
+    entry:{
+        bundle:path.resolve(__dirname, 'src'),
+        vendor: ['react','react-keeper']
+    },
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "js/[name].[Hash].js",
@@ -102,23 +104,19 @@ module.exports = {
         //在文件开头插入banner
         new webpack.BannerPlugin("The file is creted by zunyi-jike.--" + new Date()),
         new webpack.optimize.UglifyJsPlugin({
+            warnings: false,
             compress: {
+                join_vars: true,
                 warnings: false,
-                drop_console: true
             },
-        }),
-        //定义全局变量
-        new webpack.DefinePlugin({
-            PRODUCTION: JSON.stringify(true),
-            VERSION: JSON.stringify("5fa3b9"),
+            toplevel: false,
+            ie8: false,
         }),
         // //代码压缩
         // 保持文件在某个限制
         new webpack.optimize.MinChunkSizePlugin({
             minChunkSize: 5000 // Minimum number of characters
         }),
-        //热替换
-        new webpack.HotModuleReplacementPlugin(),
         //清除build文件
         new CleanWebpackPlugin(path.resolve(__dirname, "dist")),
         //设置html文件模板
@@ -142,9 +140,7 @@ module.exports = {
             minChunks: 4
         }),
         new ExtractTextPlugin('./style/[name].[hash].min.css'),
-        new ExtractTextPlugin('./style/[name].less')
     ],
-    devtool: "eval-source-map",
     resolve: {
         extensions: [
             '.web.js',

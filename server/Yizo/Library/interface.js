@@ -81,6 +81,7 @@ class Interface {
                     //执行action方法 將請求參數傳遞給指定的控制器方法
                     await controller[router.action](params);
                 } catch (err) {
+                    console.log(err)
                     //如果是自定義的異常錯誤  就返回錯誤信息 否則返回通用異常
                     res.status(err.code / 1000 == 5 ? 500 : 200);
                     let returnMessage = {

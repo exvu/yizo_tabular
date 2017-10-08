@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --progress --profile --colors --config webpack.production.config.js",
+    "build": "webpack -p --progress --profile --colors --config webpack.production.config.js",
     "start": "webpack-dev-server --devtool eval-source-map --progress --colors --host 0.0.0.0 --content-base ./build"
   },
   "keywords": [],
@@ -41,10 +41,12 @@
     "babel-plugin-import": "^1.5.0",
     "base64url": "^2.0.0",
     "file-loader": "^0.11.2",
+    "qr-image": "^3.2.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-keeper": "^2.1.6",
     "react-router-dom": "^4.2.2",
+    "text-encoding": "^0.6.4",
     "url-loader": "^0.5.9"
   }
 }

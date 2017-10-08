@@ -88,7 +88,9 @@ export default class TabularFieldList extends React.Component {
         const {tid} = this.props.params;
         const { title, explanation, fields = [] } = data || {};
         return (
-            <NavBarPage title="编辑表单">
+            <NavBarPage title="编辑表单" onLeftClick={()=>{
+                Control.go('/home')
+            }}>
                 {this.state.data && (
                     <div className="tabular-editor">
                     <div className="tabular-mes" onClick={()=>{

@@ -28,7 +28,7 @@ export default class Home extends React.Component {
         const { topPopupShow } = this.state;
         return (
             <div className="home">
-                <header className="header">
+                <header className="nav-bar">
                     <div className="left"></div>
                     <div className="title">易表</div>
                     <div className="right" onClick={() => {
