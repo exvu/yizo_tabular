@@ -70,9 +70,12 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'yizo',
+            title: '爱集',
             template: './src/sources/index.template.html',
             inject: 'body', //js插入的位置，true/'head'/'body'/false
+        }),
+        new webpack.DefinePlugin({
+            APP_NAME: '`爱集`'
         }),
         new webpack.HotModuleReplacementPlugin()
     ],

@@ -3,16 +3,15 @@ import { render } from 'react-dom'
 import './index.less'
 import {Link} from 'react-keeper'
 export default class StartPage extends React.Component{
-
     render(){
         return (
             <div className="index">
                 <header className="header">
-                    <div className="title">易表信息</div>
+                    <div className="title">爱集</div>
                 </header>
                 <div className="home-main">
                     <div className="content">
-                        <h3>yizo易表 1.0</h3>
+                        <h3>爱集 1.0</h3>
                         <p>为您更好的收集信息</p>
                     </div>
                     <div className="start-btn">
