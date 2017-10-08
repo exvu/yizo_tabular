@@ -81,6 +81,7 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                 },
+                include: path.resolve(__dirname, 'src'),
                 exclude: /node_modules/
             },
             {
@@ -119,6 +120,12 @@ module.exports = {
         }),
         //清除build文件
         new CleanWebpackPlugin(path.resolve(__dirname, "dist")),
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify('production')
+            }
+        }),
+        new webpack.HotModuleReplacementPlugin(),
         //设置html文件模板
         new HtmlWebpackPlugin({
             title:'易表',
