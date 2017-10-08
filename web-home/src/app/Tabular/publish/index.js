@@ -3,7 +3,7 @@ import './index.less'
 import { ListView, InputItem, Toast, Modal, Button } from 'antd-mobile';
 import TabularApi from '../../../sources/lib/services/tabular'
 import { createForm } from 'rc-form';
-import { Control } from 'react-keeper';
+import { Control,Link } from 'react-keeper';
 import qr from 'qr-image';
 import { TextDecoder } from 'text-encoding';
 export default createForm()(
@@ -73,7 +73,6 @@ export default createForm()(
         }
         render() {
             const { data, maskShow, code } = this.state;
-            console.log(code)
             const { getFieldProps, getFieldError } = this.props.form;
             return data ? (
                 <div className="publish" >
@@ -119,6 +118,9 @@ export default createForm()(
                         </div>
                     </div>
                     }
+                    <footer className="footer">
+                        <Link to="/">关闭</Link>
+                    </footer>
                 </div>
             ) : (null)
         }

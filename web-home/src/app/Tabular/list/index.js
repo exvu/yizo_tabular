@@ -124,11 +124,9 @@ export default class TabularList extends React.Component {
         }
     }
     async share(id) {
-        console.log(id)
-        window.location.href=`/#/tabular/${id}/publish`
-        // Control.go(`/tabular/${id}/publish`,{
-        //     share:true
-        // })
+        Control.go(`/tabular/${id}/publish`,{
+            share:true
+        })
     }
     render() {
         const { showToolBarIndex, data ,page:{count}} = this.state;
