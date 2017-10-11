@@ -128,7 +128,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         //设置html文件模板
         new HtmlWebpackPlugin({
-            title:'易表',
+            title:'爱集',
             template: './src/sources/index.template.html',
             // favicon: './src/images/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
             // filename: './index.html', //生成的html存放路径，相对于path
